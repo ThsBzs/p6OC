@@ -1,0 +1,50 @@
+body{
+    font-family: gadugi;
+}
+
+#game{
+    display: flex;
+    justify-content: center;
+}
+
+#left, #right{
+    padding: 10px;
+}
+
+#left, #battlefield, #right{
+    border: 2px solid grey;
+    min-height: 120px;
+    min-width: 250px;
+    min-width: 250px;
+    text-align: center;
+}
+
+#battlefield{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+/*Tableau*/
+table, th, td{
+    border: 1px solid black;
+}
+/*Cases occupées*/
+
+td{
+    height: 60px;
+    width: 60px;
+}
+
+h4{
+    padding-right: 20px; 
+}
+
+ul{
+    text-align: left;
+    padding-left: 10px;
+    list-style-type: none; 
+}
+
+.avatar{
+    padding-top: 10px;
+    max-height: 200px;
+}

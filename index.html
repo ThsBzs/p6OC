@@ -1,0 +1,49 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>Jeu de plateau</title> 
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+</head> 
+
+<body> 
+    <!--Container principal-->
+    <div class="flex-container" id="game">
+        <!--Container de gauche, premier perso-->
+        <div id="left">
+            <h3>Joueur 1</h3>
+            <form id="form1"> 
+                <label for="nom1">Nom :</label> 
+                <input type="text" name="nom1" id="nom1" required="true"/> 
+                <input type="submit" value="Valider" id="submit1" action="#"> 
+            </form>
+            <img src="images/minion.png" alt="Perso1" class="avatar" id="img1">
+            <h4>Caractéristiques :</h4>
+            <ul id="setP1">
+            <!--Sera remplie par la suite en jQuery/JS-->
+            </ul> 
+        </div>
+        <!--Container central, plateau-->
+        <div id="battlefield">
+            
+            <input type="submit" value="Lancer !" id="place" action="#">
+        </div>
+        <!--Container de droite, second perso-->
+        <div id="right">
+            <h3>Joueur 2</h3>
+            <form id="form2"> 
+                <label for="nom2">Nom :</label> 
+                <input type="text" name="nom2" id="nom2" required="true"/> 
+                <input type="submit" value="Valider" id="submit2" action="#"> 
+            </form>
+            <img src="images/lapin.jpg" alt="Perso2" class="avatar" id="img2">
+            <h4>Caractéristiques :</h4>
+            <ul id="setP2">
+            <!--Sera remplie par la suite en jQuery/JS-->
+            </ul> 
+        </div> 
+    </div>
+<script src="http://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="main.js"></script> 
+</body> 
+</html> 

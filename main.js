@@ -172,7 +172,7 @@ $('#place').click(function(e){
             }
         } else if (arrIndex == 14) {//1 tour pour le perso1
             /*$("td").eq(arr[arrIndex]).append($("<img src = " + perso1.token + ">"));*/
-           $("td").eq(arr[arrIndex]).css({"background-image": "url(perso.token)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
+           $("td").eq(arr[arrIndex]).css({"background-image": "url(images/MinionSmall.png)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
             arrIndex ++;
         } else if (arrIndex == 15) {//1 dernier tour pour le perso2
             $("td").eq(arr[arrIndex]).css({"background-image": "url(images/lapinSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P2");

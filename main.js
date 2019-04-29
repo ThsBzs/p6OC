@@ -226,7 +226,7 @@ function remove(elt){
 };
     
 function addP1(pos){
-    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/MinionSmall.png)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
+    $("td").eq(pos).css({"background-image": "url(images/MinionSmall.png)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
 };
     
 function addP2(pos){

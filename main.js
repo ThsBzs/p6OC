@@ -86,7 +86,7 @@ p1.addEventListener("submit", function(e){
         .append($('<li>Arme : ' + perso1.arme + '</li>'))
             .append($('<li>Score : ' + perso1.score + '</li>'));
     $('#form1').hide();
-    return perso1;
+    /*return perso1;*/
     e.preventDefault();
 });
    
@@ -152,19 +152,19 @@ $('#place').click(function(e){
             //Switch sur les index concernés pour attribuer une arme différente à chaque fois
             switch(arrIndex){
                 case 10:
-                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/epeeSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("weapon");
+                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/epeeSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("W1");
                     arrIndex++;
                 break;
                 case 11 :
-                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/lanceSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("weapon");
+                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/lanceSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("W2");
                     arrIndex++;
                 break;
                 case  12:
-                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/hacheSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("weapon");
+                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/hacheSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("W3");
                     arrIndex++;
                 break;
                 case 13 :
-                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/fleauSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("weapon");
+                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/fleauSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("W4");
                     arrIndex++;
                 break;
                 default:
@@ -179,21 +179,79 @@ $('#place').click(function(e){
         }
     };
     
+
+//Préparation d'une fonction de rafraichissement des positions : encore des problèmes de scope sur tableau et position
+function refresh(){};
+
+//Du coup, on repasse en version classique
+/*Pour le moment, cette fonction de récupération des positions reste ici, elle devre être sortie de la génération 
+du tableau par la suite, ne garder ici que la fonction refresh pour mettre à jour les positions. Du coup, 
+régler les problèmes de scope avant toute chose.*/
+const tableau = Array.from(document.querySelectorAll("td"));
+//Cette fonction renvoie la position de l'élément passé en paramètre. Evite beaucoup de code à réécrire.
+console.log(tableau);
+function position(elt){
+    let result = tableau.indexOf(document.querySelector(elt)); 
+    return result;
+};
+
+let posP1 = position(".P1");
+let posP2 = position(".P2");
+let posW1 = position(".W1");
+let posW2 = position(".W2");
+let posW3 = position(".W3");
+let posW4 = position(".W4");
+    
+console.log(posP1);
+console.log(posP2);
+console.log(posW1);
+console.log(posW2);
+console.log(posW3);
+console.log(posW4);
+    
 //Désactivation du bouton, NE PAS RETIRER
     //$('#place').hide();
     
-    //********************************DEBUT D'ESSAI DE PLACEMENT**********************************************
-//Récupération des positions des joueurs (indexes des cases ayant pour image le token)
-/*let positionP1 = $(".P1");//Renvoie un array jQuery, essayer de récupérer l'index de l'élément dans le tableau plutôt
-let positionP2 = document.querySelector(".P2");//Renvoie le contenu HTML de l'élément. Pas satisfaisant
-let tableau = document.querySelectorAll("td");
-
-console.log(positionP1);
-console.log(positionP2);
-console.log(tableau.indexOf("td.P1"));*/
 });//Ne pas retirer, fin de la fonction de création du plateau
+    
+//********************************DEBUT D'ESSAI DE PLACEMENT***********************************
+//Fonction de déplacement : doit inclure une mise à jour de la position à chaque tour
+
+//Transformation du tableau en array, fonction pour rafraîchir les positions à chaque fois
 
     
-
+//Fonctions d'ajout et de suppression du css 
+function remove(elt){
+    $("td").eq(elt).css("background-image", "none").removeClass("occuped").addClass("free");
+};
+    
+function addP1(pos){
+    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/MinionSmall.png)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
+};
+    
+function addP2(pos){
+    $("td").eq(pos).css({"background-image": "url(images/lapinSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P2");
+};
+//Préparation du déplacement, a revoir dans une méthode plus fonctionnelle à utiliser en POO 
+function move (player){
+let choice = "";//A récupérer dans le DOM avec un choix du nombre de cases
+let dir = "";//A récupérer avec la touche saisie sur les flèches du clavier
+    for (i=0; i<=choice; i++){
+        switch(dir){
+            case right :
+                pos(player) = pos(player) ++;
+            break;
+            case left :
+                pos(player) = pos(player) --;
+            break;
+            case up :
+                pos(player) = pos(player) - 10;
+            break;
+            case down :
+                pos(player) = pos(player) + 10;
+            break;
+        }
+    }
+};
 
 });//Ne pas retirer, fin de la fonction de chargement du DOM

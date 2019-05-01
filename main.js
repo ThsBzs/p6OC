@@ -8,6 +8,7 @@ let perso1;
 let perso2;
 //Préparation du tableau
 let aGriser;//Correspond aux cases occupées, sera défini dans la fonction d'occupation du tableau
+let result;//Correspond aux index renvoyés par la fonction aleatoire pour le placement des persos
 /*let longueur =(free.length - occuped.length);
     console.log(longueur);*/
 
@@ -16,14 +17,19 @@ let aGriser;//Correspond aux cases occupées, sera défini dans la fonction d'oc
 //Création d'une classe personnage
 class Perso {
     //Constructeur
-    constructor(nom, hp, degats, arme, score, token){
+    constructor(nom, hp, degats, arme, score, avatar){
         this.nom = nom;
         this.hp = hp;
         this.degats = degats;
         this.arme = arme;
         this.score = score;
-        this.token = token;
+        this.avatar = avatar;
     }
+    //Renvoie le token
+    get avatar(){
+        return Perso.avatar;
+    }
+    
     //Méthode de récupération d'arme
     weapon(nom, degats){
         this.nom = arme.nom;
@@ -85,6 +91,7 @@ p1.addEventListener("submit", function(e){
     .append($('<li>Dégâts : ' + perso1.degats + '</li>'))
         .append($('<li>Arme : ' + perso1.arme + '</li>'))
             .append($('<li>Score : ' + perso1.score + '</li>'));
+    perso1.avatar = "images/minionSmall.png";
     $('#form1').hide();
     /*return perso1;*/
     e.preventDefault();
@@ -134,14 +141,33 @@ $('#place').click(function(e){
     };
     //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
     let arr = [];
-    while(arr.length<=15){//On limite la taille du tableau 
+    while(arr.length<=13){//On limite la taille du tableau 
         melt();
         if(!arr.includes(aGriser)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
             arr.push(aGriser);
         };
     };
     
-    //Ensuite, utilisation de ce tableau
+    //Fonction pour les personnages : on attribuera des intervalles permettant de limiter leur placement initial pour éviter qu'ils ne se touchent au départ
+    function aleatoire(min, max){
+        result = Math.floor(Math.random()* (max-min +1)) + min;
+        return result;
+    };
+    
+    //Rappel de la boucle avec cette nouvelle fonction
+    while(arr.length<=14){//On limite la taille du tableau 
+        aleatoire(0, 19);
+        if(!arr.includes(result)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
+            arr.push(result);
+        };
+    };
+     while(arr.length<=15){//On limite la taille du tableau 
+        aleatoire(80, 99);
+        if(!arr.includes(result)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
+            arr.push(result);
+        };
+    };
+    console.log(arr);
     let arrIndex = 0;
     //arr[arrIndex] permet de faire correspondre l'index du plateau (arr) avec la valeur d'une boucle de 16 tours utilisée ensuite (arrIndex)
     for(i=0; i<= 15; i++){
@@ -172,7 +198,7 @@ $('#place').click(function(e){
             }
         } else if (arrIndex == 14) {//1 tour pour le perso1
             /*$("td").eq(arr[arrIndex]).append($("<img src = " + perso1.token + ">"));*/
-           $("td").eq(arr[arrIndex]).css({"background-image": "url(images/MinionSmall.png)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
+           $("td").eq(arr[arrIndex]).css({"background-image": "url(images/minionSmall.png)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
             arrIndex ++;
         } else if (arrIndex == 15) {//1 dernier tour pour le perso2
             $("td").eq(arr[arrIndex]).css({"background-image": "url(images/lapinSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P2");
@@ -253,5 +279,9 @@ let dir = "";//A récupérer avec la touche saisie sur les flèches du clavier
         }
     }
 };
+    
+
+
+
 
 });//Ne pas retirer, fin de la fonction de chargement du DOM

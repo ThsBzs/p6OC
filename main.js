@@ -3,7 +3,7 @@ $(function(){//Attente du chargement complet du DOM avant modification
 //Récupération des noms saisis par le(s) joueur(s)
 const p1 = document.querySelector("#form1");  
 const p2 = document.querySelector("#form2")
-//Préparation des persos
+//Préparation des persos et armes
 let perso1;
 let perso2;
 let epee;
@@ -77,6 +77,10 @@ class Board{
     }
  
 };
+    
+//Création des personnages
+perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png");
+perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg");
 //Création des armes
 epee = new Arme(epee, 20, "images/epeeSmall.jpg");
 hache = new Arme(lance, 30, "images/hacheSmall.jpg");
@@ -89,22 +93,18 @@ fleau = new Arme(fleau, 25, "images/fleauSmall.jpg");
 //Joueur1
 p1.addEventListener("submit", function(e){
     let saisie1 = form1.elements.nom1;
-    perso1 = new Perso(saisie1.value, 100, 10, "Aucune", 0, "images/minionSmall.png");
-    $('<h3>Nom : ' + saisie1.value + '</h3>').insertAfter('#img1');
+        $('<h3>Nom : ' + saisie1.value + '</h3>').insertAfter('#img1');
     $('#setP1').append($('<li>Santé : ' + perso1.hp + '</li>'))
     .append($('<li>Dégâts : ' + perso1.degats + '</li>'))
         .append($('<li>Arme : ' + perso1.arme + '</li>'))
             .append($('<li>Score : ' + perso1.score + '</li>'));
-    /*perso1.avatar : "images/minionSmall.png";*/
     $('#form1').hide();
-    /*return perso1;*/
     e.preventDefault();
 });
    
 //Joueur2
 p2.addEventListener("submit", function(e){
     let saisie2 = form2.elements.nom2;
-    perso2 = new Perso(saisie2.value, 100, 10, "Aucune", 0, "images/lapinSmall.jpg");
     $('<h3>Nom : ' + saisie2.value + '</h3>').insertAfter('#img2');
     $('#setP2').append($('<li>Santé : ' + perso2.hp + '</li>'))
     .append($('<li>Dégâts : ' + perso2.degats + '</li>'))
@@ -158,6 +158,14 @@ $('#place').click(function(e){
         return result;
     };
     
+    /*Fonction pour placer les éléments et classes passés en paramètre
+    avatar = objet.avatar
+    cat = classe ajoutée*/
+    function addImage(avatar, cat){
+        let result =  $("td").eq(arr[arrIndex]).append($("<img src = " + avatar + ">")).removeClass("free").addClass(cat);
+        return result;
+    }
+    
     //Rappel de la boucle avec cette nouvelle fonction
     while(arr.length<=14){//On limite la taille du tableau 
         aleatoire(0, 39);
@@ -182,30 +190,30 @@ $('#place').click(function(e){
             //Switch sur les index concernés pour attribuer une arme différente à chaque fois
             switch(arrIndex){
                 case 10:
-                    $("td").eq(arr[arrIndex]).append($("<img src = " + epee.avatar + ">")).removeClass("free").addClass("W1");
+                    addImage(epee.avatar, "W1");
+                    
                     arrIndex++;
                 break;
                 case 11 :
-                    $("td").eq(arr[arrIndex]).append($("<img src = " + hache.avatar + ">")).removeClass("free").addClass("W2");
+                    addImage(hache.avatar, "W2");
                     arrIndex++;
                 break;
                 case  12:
-                    $("td").eq(arr[arrIndex]).append($("<img src = " + lance.avatar + ">")).removeClass("free").addClass("W3");
+                    addImage(lance.avatar, "W3");
                     arrIndex++;
                 break;
                 case 13 :
-                    $("td").eq(arr[arrIndex]).append($("<img src = " + fleau.avatar + ">")).removeClass("free").addClass("W4");
+                    addImage(fleau.avatar, "W4");
                     arrIndex++;
                 break;
                 default:
                     arrIndex++;             
             }
         } else if (arrIndex == 14) {//1 tour pour le perso1
-            $("td").eq(arr[arrIndex]).append($("<img src = " + perso1.avatar + ">")).removeClass("free").addClass("P1")
-           /*$("td").eq(arr[arrIndex]).css({"background-image": "url(" + perso1.avatar +  ")", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");*/
+            addImage(perso1.avatar, "P1");
             arrIndex ++;
         } else if (arrIndex == 15) {//1 dernier tour pour le perso2
-            $("td").eq(arr[arrIndex]).append($("<img src = " + perso2.avatar + ">")).removeClass("free").addClass("P2");
+            addImage(perso2.avatar, "P2");
         }
     };
     

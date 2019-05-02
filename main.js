@@ -85,7 +85,7 @@ const fleau = new Arme(fleau, 25);
 //Joueur1
 p1.addEventListener("submit", function(e){
     let saisie1 = form1.elements.nom1;
-    let perso1 = new Perso(saisie1.value, 100, 10, "Aucune", 0, "images/minionSmall.png");
+    perso1 = new Perso(saisie1.value, 100, 10, "Aucune", 0, "images/minionSmall.png");
     $('<h3>Nom : ' + saisie1.value + '</h3>').insertAfter('#img1');
     $('#setP1').append($('<li>Santé : ' + perso1.hp + '</li>'))
     .append($('<li>Dégâts : ' + perso1.degats + '</li>'))
@@ -100,7 +100,7 @@ p1.addEventListener("submit", function(e){
 //Joueur2
 p2.addEventListener("submit", function(e){
     let saisie2 = form2.elements.nom2;
-    let perso2 = new Perso(saisie2.value, 100, 10, "Aucune", 0, "images/lapinSmall.jpg");
+    perso2 = new Perso(saisie2.value, 100, 10, "Aucune", 0, "images/lapinSmall.jpg");
     $('<h3>Nom : ' + saisie2.value + '</h3>').insertAfter('#img2');
     $('#setP2').append($('<li>Santé : ' + perso2.hp + '</li>'))
     .append($('<li>Dégâts : ' + perso2.degats + '</li>'))
@@ -156,13 +156,13 @@ $('#place').click(function(e){
     
     //Rappel de la boucle avec cette nouvelle fonction
     while(arr.length<=14){//On limite la taille du tableau 
-        aleatoire(0, 19);
+        aleatoire(0, 39);
         if(!arr.includes(result)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
             arr.push(result);
         };
     };
      while(arr.length<=15){//On limite la taille du tableau 
-        aleatoire(80, 99);
+        aleatoire(50, 99);
         if(!arr.includes(result)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
             arr.push(result);
         };
@@ -197,8 +197,8 @@ $('#place').click(function(e){
                     arrIndex++;             
             }
         } else if (arrIndex == 14) {//1 tour pour le perso1
-            /*$("td").eq(arr[arrIndex]).append($("<img src = " + perso1.token + ">"));*/
-           $("td").eq(arr[arrIndex]).css({"background-image": "url(images/minionSmall.png)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
+            $("td").eq(arr[arrIndex]).append($("<img src = " + perso1.avatar + ">"));
+           /*$("td").eq(arr[arrIndex]).css({"background-image": "url(" + perso1.avatar +  ")", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");*/
             arrIndex ++;
         } else if (arrIndex == 15) {//1 dernier tour pour le perso2
             $("td").eq(arr[arrIndex]).css({"background-image": "url(images/lapinSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P2");
@@ -214,8 +214,8 @@ function refresh(){};
 du tableau par la suite, ne garder ici que la fonction refresh pour mettre à jour les positions. Du coup, 
 régler les problèmes de scope avant toute chose.*/
 const tableau = Array.from(document.querySelectorAll("td"));
+    
 //Cette fonction renvoie la position de l'élément passé en paramètre. Evite beaucoup de code à réécrire.
-console.log(tableau);
 function position(elt){
     let result = tableau.indexOf(document.querySelector(elt)); 
     return result;

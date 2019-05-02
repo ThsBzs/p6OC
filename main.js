@@ -6,6 +6,10 @@ const p2 = document.querySelector("#form2")
 //Préparation des persos
 let perso1;
 let perso2;
+let epee;
+let hache;
+let lance;
+let fleau;
 //Préparation du tableau
 let aGriser;//Correspond aux cases occupées, sera défini dans la fonction d'occupation du tableau
 let result;//Correspond aux index renvoyés par la fonction aleatoire pour le placement des persos
@@ -26,10 +30,10 @@ class Perso {
         this.avatar = avatar;
     }
     //Renvoie le token
-    get avatar(){
-        return Perso.avatar;
+    /*get avatar(){
+        return this.avatar;
     }
-    
+    */
     //Méthode de récupération d'arme
     weapon(nom, degats){
         this.nom = arme.nom;
@@ -56,9 +60,10 @@ class Perso {
 //Création d'une classe arme
 class Arme {
     //Constructeur
-    constructor(nom, degats){
+    constructor(nom, degats, avatar){
         this.nom = nom;
         this.degats = degats;
+        this.avatar = avatar;
     }
 };
 /*Vérifier s'il ne vaut mieux pas créer tout ça en function
@@ -73,12 +78,11 @@ class Board{
  
 };
 //Création des armes
-/*
-const epee = new Arme(epee, 20);
-const hache = new Arme(lance, 30);
-const lance = new Arme(hache, 25);
-const fleau = new Arme(fleau, 25);
-*/
+epee = new Arme(epee, 20, "images/epeeSmall.jpg");
+hache = new Arme(lance, 30, "images/hacheSmall.jpg");
+lance = new Arme(hache, 25, "images/lanceSmall.jpg");
+fleau = new Arme(fleau, 25, "images/fleauSmall.jpg");
+
    
 
 //************************ GENERATION DES PERSONNAGES*****************************
@@ -91,7 +95,7 @@ p1.addEventListener("submit", function(e){
     .append($('<li>Dégâts : ' + perso1.degats + '</li>'))
         .append($('<li>Arme : ' + perso1.arme + '</li>'))
             .append($('<li>Score : ' + perso1.score + '</li>'));
-    perso1.avatar = "images/minionSmall.png";
+    /*perso1.avatar : "images/minionSmall.png";*/
     $('#form1').hide();
     /*return perso1;*/
     e.preventDefault();
@@ -178,30 +182,30 @@ $('#place').click(function(e){
             //Switch sur les index concernés pour attribuer une arme différente à chaque fois
             switch(arrIndex){
                 case 10:
-                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/epeeSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("W1");
+                    $("td").eq(arr[arrIndex]).append($("<img src = " + epee.avatar + ">")).removeClass("free").addClass("W1");
                     arrIndex++;
                 break;
                 case 11 :
-                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/lanceSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("W2");
+                    $("td").eq(arr[arrIndex]).append($("<img src = " + hache.avatar + ">")).removeClass("free").addClass("W2");
                     arrIndex++;
                 break;
                 case  12:
-                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/hacheSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("W3");
+                    $("td").eq(arr[arrIndex]).append($("<img src = " + lance.avatar + ">")).removeClass("free").addClass("W3");
                     arrIndex++;
                 break;
                 case 13 :
-                    $("td").eq(arr[arrIndex]).css({"background-image": "url(images/fleauSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("W4");
+                    $("td").eq(arr[arrIndex]).append($("<img src = " + fleau.avatar + ">")).removeClass("free").addClass("W4");
                     arrIndex++;
                 break;
                 default:
                     arrIndex++;             
             }
         } else if (arrIndex == 14) {//1 tour pour le perso1
-            $("td").eq(arr[arrIndex]).append($("<img src = " + perso1.avatar + ">"));
+            $("td").eq(arr[arrIndex]).append($("<img src = " + perso1.avatar + ">")).removeClass("free").addClass("P1")
            /*$("td").eq(arr[arrIndex]).css({"background-image": "url(" + perso1.avatar +  ")", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");*/
             arrIndex ++;
         } else if (arrIndex == 15) {//1 dernier tour pour le perso2
-            $("td").eq(arr[arrIndex]).css({"background-image": "url(images/lapinSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P2");
+            $("td").eq(arr[arrIndex]).append($("<img src = " + perso2.avatar + ">")).removeClass("free").addClass("P2");
         }
     };
     

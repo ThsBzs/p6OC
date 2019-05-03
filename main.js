@@ -222,12 +222,12 @@ $('#place').click(function(e){
 function refresh(){};
 
 //Du coup, on repasse en version classique
-/*Pour le moment, cette fonction de récupération des positions reste ici, elle devre être sortie de la génération 
+/*Pour le moment, cette fonction de récupération des positions reste ici, elle devra être sortie de la génération 
 du tableau par la suite, ne garder ici que la fonction refresh pour mettre à jour les positions. Du coup, 
 régler les problèmes de scope avant toute chose.*/
 const tableau = Array.from(document.querySelectorAll("td"));
     
-//Cette fonction renvoie la position de l'élément passé en paramètre. Evite beaucoup de code à réécrire.
+//Cette fonction renvoie la position de l'élément passé en paramètre.
 function position(elt){
     let result = tableau.indexOf(document.querySelector(elt)); 
     return result;
@@ -290,7 +290,12 @@ let dir = "";//A récupérer avec la touche saisie sur les flèches du clavier
             break;
         }
     }
+//Préparation d'une fonnction de récupération des armes 
+function add
+    
 };
+    
+
     
 
 

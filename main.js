@@ -4,36 +4,40 @@ $(function(){//Attente du chargement complet du DOM avant modification
 const p1 = document.querySelector("#form1");  
 const p2 = document.querySelector("#form2")
 //Préparation des persos et armes
-let perso1;
-let perso2;
-let epee;
-let hache;
-let lance;
-let fleau;
+let perso1,
+    perso2,
+    epee,
+    hache,
+    lance,
+    fleau,
 //Préparation du tableau
-let aGriser;//Correspond aux cases occupées, sera défini dans la fonction d'occupation du tableau
-let result;//Correspond aux index renvoyés par la fonction aleatoire pour le placement des persos
-/*let longueur =(free.length - occuped.length);
-    console.log(longueur);*/
+    aGriser,//Correspond aux cases occupées, sera défini dans la fonction d'occupation du tableau
+    result,//Correspond aux index renvoyés par la fonction aleatoire pour le placement des persos
+    tableau,//Correspond au tableau global, mis à jour pour les positions
+//Préparation des déplacements
+    arrayPos,//Tableau des positions des éléments déplaçables - SUPPRIMABLE SI REFRESHPOS RESTE EN objet.position
+    dir,//Sera utilisée dans la méthode pour définir la touche pressée
+    posP1,//positions
+    posP2,
+    posW1,
+    posW2,
+    posW3,
+    posW4;
 
 
 //*****************DECLARATION DES OBJETS, CLASSES ET METHODES******************
 //Création d'une classe personnage
 class Perso {
     //Constructeur
-    constructor(nom, hp, degats, arme, score, avatar){
+    constructor(nom, hp, degats, arme, score, avatar, position){
         this.nom = nom;
         this.hp = hp;
         this.degats = degats;
         this.arme = arme;
         this.score = score;
         this.avatar = avatar;
+        this.position = position;
     }
-    //Renvoie le token
-    /*get avatar(){
-        return this.avatar;
-    }
-    */
     //Méthode de récupération d'arme
     weapon(nom, degats){
         this.nom = arme.nom;
@@ -51,19 +55,38 @@ class Perso {
     }
     //Méthode de déplacement
     move(perso){
-    /*let positionA = ;*/
     /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
     Ne pas oublier la possibilité qu'une case soit occupée.*/
+    $("body").keydown(function(e){
+        dir = e.which;
+        return dir;
+    })
+     switch(dir){
+            case 39 :
+                this.position = this.position ++;
+            break;
+            case 37 :
+                this.position = this.position --;
+            break;
+            case 38 :
+                this.position = this.position - 10;
+            break;
+            case 40 :
+                this.position = this.position + 10;
+            break;
+        }
+    /*let positionA = ;*/
     };
 };
 
 //Création d'une classe arme
 class Arme {
     //Constructeur
-    constructor(nom, degats, avatar){
+    constructor(nom, degats, avatar, position){
         this.nom = nom;
         this.degats = degats;
         this.avatar = avatar;
+        this.position = position;
     }
 };
 /*Vérifier s'il ne vaut mieux pas créer tout ça en function
@@ -79,13 +102,13 @@ class Board{
 };
     
 //Création des personnages
-perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png");
-perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg");
+perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", "");
+perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", "");
 //Création des armes
-epee = new Arme(epee, 20, "images/epeeSmall.jpg");
-hache = new Arme(lance, 30, "images/hacheSmall.jpg");
-lance = new Arme(hache, 25, "images/lanceSmall.jpg");
-fleau = new Arme(fleau, 25, "images/fleauSmall.jpg");
+w1 = new Arme(epee, 20, "images/epeeSmall.jpg" , "");
+w2 = new Arme(lance, 30, "images/hacheSmall.jpg" , "");
+w3 = new Arme(hache, 25, "images/lanceSmall.jpg" , "");
+w4 = new Arme(fleau, 25, "images/fleauSmall.jpg" , "");
 
    
 
@@ -117,7 +140,9 @@ p2.addEventListener("submit", function(e){
    
 //************************GENERATION DU PLATEAU***********************************
 //Action au clic sur "Lancer !"
-$('#place').click(function(e){  
+$('#place').click(function(e){ 
+//Désactivation du bouton, NE PAS RETIRER, il reste visible le temps du développement
+    //$('#place').hide();
 //Avant tout, suppression du contenu s'il existait déjà pour repartir sur un plateau neuf
     $("td, tr, table").remove();
 //Première étape : création du plateau
@@ -190,20 +215,20 @@ $('#place').click(function(e){
             //Switch sur les index concernés pour attribuer une arme différente à chaque fois
             switch(arrIndex){
                 case 10:
-                    addImage(epee.avatar, "W1");
+                    addImage(w1.avatar, "W1");
                     
                     arrIndex++;
                 break;
                 case 11 :
-                    addImage(hache.avatar, "W2");
+                    addImage(w2.avatar, "W2");
                     arrIndex++;
                 break;
                 case  12:
-                    addImage(lance.avatar, "W3");
+                    addImage(w3.avatar, "W3");
                     arrIndex++;
                 break;
                 case 13 :
-                    addImage(fleau.avatar, "W4");
+                    addImage(w4.avatar, "W4");
                     arrIndex++;
                 break;
                 default:
@@ -218,82 +243,55 @@ $('#place').click(function(e){
     };
     
 
-//Préparation d'une fonction de rafraichissement des positions : encore des problèmes de scope sur tableau et position
-function refresh(){};
-
-//Du coup, on repasse en version classique
 /*Pour le moment, cette fonction de récupération des positions reste ici, elle devra être sortie de la génération 
 du tableau par la suite, ne garder ici que la fonction refresh pour mettre à jour les positions. Du coup, 
 régler les problèmes de scope avant toute chose.*/
-const tableau = Array.from(document.querySelectorAll("td"));
-    
-//Cette fonction renvoie la position de l'élément passé en paramètre.
-function position(elt){
-    let result = tableau.indexOf(document.querySelector(elt)); 
-    return result;
+//Fonction globale pour mettre à jour les positions de tous les éléments déplacables
+function refreshPos(){
+    //Mise à jour du tableau avec les nouvelles positions
+    tableau = Array.from(document.querySelectorAll("td"));
+    //Cette fonction renvoie la position de l'élément passé en paramètre.
+    function position(elt){
+        let result = tableau.indexOf(document.querySelector(elt)); 
+        return result;
+    };
+    perso1.position = position(".P1");
+    perso2.position = position(".P2");
+    w1.position = position(".W1");
+    w2.position = position(".W2");
+    w3.position = position(".W3");
+    w4.position = position(".W4");
+    /*Ancien essai avec un array. Récupérer la position depuis l'objet me semble en fait plus facile.
+    arrayPos = [posP1, posP2, posW1, posW2, posW3, posW4];
+    return arrayPos;*/
 };
 
-let posP1 = position(".P1");
-let posP2 = position(".P2");
-let posW1 = position(".W1");
-let posW2 = position(".W2");
-let posW3 = position(".W3");
-let posW4 = position(".W4");
-    
-console.log(posP1);
-console.log(posP2);
-console.log(posW1);
-console.log(posW2);
-console.log(posW3);
-console.log(posW4);
-    
-//Désactivation du bouton, NE PAS RETIRER
-    //$('#place').hide();
-    
+refreshPos();
+console.log(perso1.position);
+ 
 });//Ne pas retirer, fin de la fonction de création du plateau
     
 //********************************DEBUT D'ESSAI DE PLACEMENT***********************************
-//Fonction de déplacement : doit inclure une mise à jour de la position à chaque tour
+//Fonction de suppression du css pour retirer l'image
+function remove(classe){
+    $("td").eq(classe).css("background-image", "none").removeClass("occuped").addClass("free");
+};
+    
+  
+//Fonction de récupération de la touche pressée
 
-//Transformation du tableau en array, fonction pour rafraîchir les positions à chaque fois
-
-    
-//Fonctions d'ajout et de suppression du css 
-function remove(elt){
-    $("td").eq(elt).css("background-image", "none").removeClass("occuped").addClass("free");
-};
-    
-function addP1(pos){
-    $("td").eq(pos).css({"background-image": "url(images/MinionSmall.png)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P1");
-};
-    
-function addP2(pos){
-    $("td").eq(pos).css({"background-image": "url(images/lapinSmall.jpg)", "background-position": "center", "background-repeat": "no-repeat"}).removeClass("free").addClass("P2");
-};
 //Préparation du déplacement, a revoir dans une méthode plus fonctionnelle à utiliser en POO 
-function move (player){
+function move (perso){
 let choice = "";//A récupérer dans le DOM avec un choix du nombre de cases
 let dir = "";//A récupérer avec la touche saisie sur les flèches du clavier
     for (i=0; i<=choice; i++){
-        switch(dir){
-            case right :
-                pos(player) = pos(player) ++;
-            break;
-            case left :
-                pos(player) = pos(player) --;
-            break;
-            case up :
-                pos(player) = pos(player) - 10;
-            break;
-            case down :
-                pos(player) = pos(player) + 10;
-            break;
-        }
+        move(player);
+        refreshPos();
     }
-//Préparation d'une fonnction de récupération des armes 
-function add
-    
 };
+
+//La même chose en POO, appelle la méthode attribuée au personnage
+    perso1.move;
     
 
     

@@ -100,8 +100,6 @@ class Arme {
         this.classe = classe;
     }
 };
-/*Vérifier s'il ne vaut mieux pas créer tout ça en function
-Voir aussi pour l'image, à quel endroit la stocker et la déclarer*/
 
 class Board{
     //Constructeur

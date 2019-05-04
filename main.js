@@ -29,7 +29,7 @@ let perso1,
 //Création d'une classe personnage
 class Perso {
     //Constructeur
-    constructor(nom, hp, degats, arme, score, avatar, position){
+    constructor(nom, hp, degats, arme, score, avatar, position, classe){
         this.nom = nom;
         this.hp = hp;
         this.degats = degats;
@@ -37,6 +37,7 @@ class Perso {
         this.score = score;
         this.avatar = avatar;
         this.position = position;
+        this.classe = classe;
     }
     //Méthode de récupération d'arme
     weapon(nom, degats){
@@ -57,7 +58,7 @@ class Perso {
     move(perso){
     /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
     Ne pas oublier la possibilité qu'une case soit occupée.*/
-    $("body").keydown(function(e){
+    $('#battlefield').keydown(function(e){
         dir = e.which;
         return dir;
     })
@@ -76,17 +77,27 @@ class Perso {
             break;
         }
     /*let positionA = ;*/
+        remove(this.classe)
+        //Fonction addImage semblable à la première (ligne 200), mais utilisant directement la position du joueur
+        function addImage2(position, avatar, classe){
+            let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
+            return result;
+        };
+        addImage2(this.position, this.avatar, this.classe);
+        refreshPos();
+        
     };
 };
 
 //Création d'une classe arme
 class Arme {
     //Constructeur
-    constructor(nom, degats, avatar, position){
+    constructor(nom, degats, avatar, position, classe){
         this.nom = nom;
         this.degats = degats;
         this.avatar = avatar;
         this.position = position;
+        this.classe = classe;
     }
 };
 /*Vérifier s'il ne vaut mieux pas créer tout ça en function
@@ -102,13 +113,13 @@ class Board{
 };
     
 //Création des personnages
-perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", "");
-perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", "");
+perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", "", "P1");
+perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", "", "P2");
 //Création des armes
-w1 = new Arme(epee, 20, "images/epeeSmall.jpg" , "");
-w2 = new Arme(lance, 30, "images/hacheSmall.jpg" , "");
-w3 = new Arme(hache, 25, "images/lanceSmall.jpg" , "");
-w4 = new Arme(fleau, 25, "images/fleauSmall.jpg" , "");
+w1 = new Arme(epee, 20, "images/epeeSmall.jpg" , "", "W1");
+w2 = new Arme(lance, 30, "images/hacheSmall.jpg" , "", "W2");
+w3 = new Arme(hache, 25, "images/lanceSmall.jpg" , "", "W3");
+w4 = new Arme(fleau, 25, "images/fleauSmall.jpg" , "", "W4");
 
    
 
@@ -186,10 +197,11 @@ $('#place').click(function(e){
     /*Fonction pour placer les éléments et classes passés en paramètre
     avatar = objet.avatar
     cat = classe ajoutée*/
-    function addImage(avatar, cat){
-        let result =  $("td").eq(arr[arrIndex]).append($("<img src = " + avatar + ">")).removeClass("free").addClass(cat);
+    function addImage(avatar, classe){
+        let result =  $("td").eq(arr[arrIndex]).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
         return result;
     }
+    
     
     //Rappel de la boucle avec cette nouvelle fonction
     while(arr.length<=14){//On limite la taille du tableau 
@@ -215,32 +227,35 @@ $('#place').click(function(e){
             //Switch sur les index concernés pour attribuer une arme différente à chaque fois
             switch(arrIndex){
                 case 10:
-                    addImage(w1.avatar, "W1");
+                    addImage(w1.avatar, w1.classe);
                     
                     arrIndex++;
                 break;
                 case 11 :
-                    addImage(w2.avatar, "W2");
+                    addImage(w2.avatar, w2.classe);
                     arrIndex++;
                 break;
                 case  12:
-                    addImage(w3.avatar, "W3");
+                    addImage(w3.avatar, w3.classe);
                     arrIndex++;
                 break;
                 case 13 :
-                    addImage(w4.avatar, "W4");
+                    addImage(w4.avatar, w4.classe);
                     arrIndex++;
                 break;
                 default:
                     arrIndex++;             
             }
         } else if (arrIndex == 14) {//1 tour pour le perso1
-            addImage(perso1.avatar, "P1");
+            addImage(perso1.avatar, perso1.classe);
             arrIndex ++;
         } else if (arrIndex == 15) {//1 dernier tour pour le perso2
-            addImage(perso2.avatar, "P2");
+            addImage(perso2.avatar, perso2.classe);
         }
     };
+    refreshPos()//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
+        console.log(perso1.position);
+        console.log(perso2.position);
     
 
 /*Pour le moment, cette fonction de récupération des positions reste ici, elle devra être sortie de la génération 
@@ -267,7 +282,6 @@ function refreshPos(){
 };
 
 refreshPos();
-console.log(perso1.position);
  
 });//Ne pas retirer, fin de la fonction de création du plateau
     
@@ -281,19 +295,18 @@ function remove(classe){
 //Fonction de récupération de la touche pressée
 
 //Préparation du déplacement, a revoir dans une méthode plus fonctionnelle à utiliser en POO 
-function move (perso){
+/*function move (perso){
 let choice = "";//A récupérer dans le DOM avec un choix du nombre de cases
 let dir = "";//A récupérer avec la touche saisie sur les flèches du clavier
     for (i=0; i<=choice; i++){
         move(player);
         refreshPos();
     }
-};
+};*/
 
 //La même chose en POO, appelle la méthode attribuée au personnage
     perso1.move;
     
-
     
 
 

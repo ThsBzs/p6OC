@@ -106,6 +106,7 @@ class Arme {
         this.classe = classe;
     }
 };
+
     
 //Création d'une classe de bloc occupé
 class Occuped{

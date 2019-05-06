@@ -10,6 +10,7 @@ let perso1,
     hache,
     lance,
     fleau,
+    occupe,
 //Préparation du tableau
     aGriser,//Correspond aux cases occupées, sera défini dans la fonction d'occupation du tableau
     result,//Correspond aux index renvoyés par la fonction aleatoire pour le placement des persos
@@ -23,7 +24,6 @@ let perso1,
     posW2,
     posW3,
     posW4;
-
 
 //*****************DECLARATION DES OBJETS, CLASSES ET METHODES******************
 //Création d'une classe personnage
@@ -46,7 +46,7 @@ class Perso {
         //Attention, où rajouter les dégâts de l'arme à ceux du perso???
     }
     //Méthode d'attaque
-    attaque(attaquant, cible){
+    attaque(attaquant, cible){//Ajouter une vérification de la santé de l'adversaire
     let degatsMax = perso.degats + arme.degats;
     cible.hp = cible.hp - (attaquant.degatsMax - cible.defense);
     }
@@ -56,10 +56,16 @@ class Perso {
     }
     //Méthode de déplacement
     move(perso){
+    //Préparation d'une fonction de retrait du CSS pour générer le déplacement
+        function remove(classe){
+            $("td").eq(classe).css("background-image", "none").removeClass("occuped").addClass("free");
+        };
     /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
     Ne pas oublier la possibilité qu'une case soit occupée.*/
-    $('#battlefield').keydown(function(e){
-        dir = e.which;
+    $('#playbloard1').keydown(function(event){
+        dir = event.which;
+        console.log(dir);
+        remove(this.classe);
         return dir;
     })
      switch(dir){
@@ -75,17 +81,17 @@ class Perso {
             case 40 :
                 this.position = this.position + 10;
             break;
+            default:
+                refreshPos();
         }
     /*let positionA = ;*/
-        remove(this.classe)
+        
         //Fonction addImage semblable à la première (ligne 200), mais utilisant directement la position du joueur
         function addImage2(position, avatar, classe){
             let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
             return result;
         };
         addImage2(this.position, this.avatar, this.classe);
-        refreshPos();
-        
     };
 };
 
@@ -100,9 +106,17 @@ class Arme {
         this.classe = classe;
     }
 };
-/*Vérifier s'il ne vaut mieux pas créer tout ça en function
-Voir aussi pour l'image, à quel endroit la stocker et la déclarer*/
-
+    
+//Création d'une classe de bloc occupé
+class Occuped{
+    //Constructeur
+    constructor(avatar, classe){
+        this.avatar = avatar;
+        this.classe = classe;
+    }
+};
+    
+//Création d'une classe pour le tableau
 class Board{
     //Constructeur
     constructor(lines, cases){
@@ -111,7 +125,8 @@ class Board{
     }
  
 };
-    
+
+
 //Création des personnages
 perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", "", "P1");
 perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", "", "P2");
@@ -120,6 +135,9 @@ w1 = new Arme(epee, 20, "images/epeeSmall.jpg" , "", "W1");
 w2 = new Arme(lance, 30, "images/hacheSmall.jpg" , "", "W2");
 w3 = new Arme(hache, 25, "images/lanceSmall.jpg" , "", "W3");
 w4 = new Arme(fleau, 25, "images/fleauSmall.jpg" , "", "W4");
+//Création des blocs occupés
+occupe = new Occuped("images/grisSmall.jpg", "occuped");
+
 
    
 
@@ -221,14 +239,13 @@ $('#place').click(function(e){
     //arr[arrIndex] permet de faire correspondre l'index du plateau (arr) avec la valeur d'une boucle de 16 tours utilisée ensuite (arrIndex)
     for(i=0; i<= 15; i++){
         if (arrIndex<= 9){//Fera donc 10 tours en changeant le css en grey
-            $("td").eq(arr[arrIndex]).css("background-color", "grey").removeClass("free").addClass("occuped");
+            addImage(occupe.avatar, occupe.classe);
             arrIndex ++;//On augmente la valeur d'arrIndex à chaque fois, pour ne pas repasser sur la même case
         } else if (arrIndex>9 && arrIndex <= 13){//4 tours avec les armes
             //Switch sur les index concernés pour attribuer une arme différente à chaque fois
             switch(arrIndex){
                 case 10:
                     addImage(w1.avatar, w1.classe);
-                    
                     arrIndex++;
                 break;
                 case 11 :
@@ -255,7 +272,7 @@ $('#place').click(function(e){
     };
     refreshPos()//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
         console.log(perso1.position);
-        console.log(perso2.position);
+
     
 
 /*Pour le moment, cette fonction de récupération des positions reste ici, elle devra être sortie de la génération 

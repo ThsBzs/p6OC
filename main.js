@@ -62,8 +62,9 @@ class Perso {
         };
     /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
     Ne pas oublier la possibilité qu'une case soit occupée.*/
-    $('#playbloard1').keydown(function(event){
-        dir = event.which;
+
+    $('#battlefield').keypress(function(e){
+        dir = e.which;
         console.log(dir);
         remove(this.classe);
         return dir;

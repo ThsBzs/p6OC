@@ -300,7 +300,16 @@ function refreshPos(){
 };
 
 refreshPos();
- 
+ //Essai de déplacement de la fonction de récupération des touches pour voir si elle fonctionne
+function move(){
+    $('#playbloard1').keydown(function(event){
+        dir = event.which;
+    })
+console.log(dir);
+};
+    move();
+        
+    
 });//Ne pas retirer, fin de la fonction de création du plateau
     
 //********************************DEBUT D'ESSAI DE PLACEMENT***********************************
@@ -308,6 +317,8 @@ refreshPos();
 function remove(classe){
     $("td").eq(classe).css("background-image", "none").removeClass("occuped").addClass("free");
 };
+    
+
     
   
 //Fonction de récupération de la touche pressée

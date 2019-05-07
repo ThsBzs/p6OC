@@ -43,7 +43,9 @@ ul{
     padding-left: 10px;
     list-style-type: none; 
 }
-
+.occuped{
+    background-color: dimgray;
+}
 .avatar{
     padding-top: 10px;
     max-height: 200px;

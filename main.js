@@ -58,7 +58,7 @@ class Perso {
     move(perso){
     /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
     Ne pas oublier la possibilité qu'une case soit occupée.*/
-    $('#battlefield').keydown(function(e){
+    $('#battlefield').keypress(function(e){
         dir = e.which;
         return dir;
     })

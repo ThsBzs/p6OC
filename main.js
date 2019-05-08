@@ -273,7 +273,6 @@ $('#place').click(function(e){
         console.log(perso1.position);
 
     
-
 /*Pour le moment, cette fonction de récupération des positions reste ici, elle devra être sortie de la génération 
 du tableau par la suite, ne garder ici que la fonction refresh pour mettre à jour les positions. Du coup, 
 régler les problèmes de scope avant toute chose.*/
@@ -314,52 +313,43 @@ console.log(dir);
     //Essai d'ajout d'un focus avec .click sur battelfield pour les déplacements
 
         $('#playBoard1').keypress(function(e){
-        dir = e.charCode();
-        console.log(dir);
-        //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
-        function addImage2(position, avatar, classe){
-            let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
-            return result;
-        };
-
-    
-     switch(dir){
-            case 39 :
-                remove(perso1.classe);
-                perso1.position = perso1.position ++;
-                refreshPos();
-                addImage2(perso1.position, perso1.avatar, perso1.classe);
-            break;
-            case 37 :
-                remove(perso1.classe);
-                perso1.position = perso1.position --;
-                refreshPos();
-                addImage2(perso1.position, perso1.avatar, perso1.classe);
-            break;
-            case 38 :
-                remove(perso1.classe);
-                perso1.position = perso1.position - 10;
-                refreshPos();
-                addImage2(perso1.position, perso1.avatar, perso1.classe);
-            break;
-            case 40 :
-                remove(perso1.classe);
-                perso1.position = perso1.position + 10;
-                refreshPos();
-                addImage2(perso1.position, perso1.avatar, perso1.classe);
-            break;
-            default:
-                refreshPos();
-        }
-    /*let positionA = ;*/
-        
-        
-        
+            dir = e.which();
+            console.log(dir);
+            //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
+            function addImage2(position, avatar, classe){
+                let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
+                return result;
+            };
+            switch(dir){
+                case 39 :
+                    remove(perso1.classe);
+                    perso1.position = perso1.position ++;
+                    refreshPos();
+                    addImage2(perso1.position, perso1.avatar, perso1.classe);
+                break;
+                case 37 :
+                    remove(perso1.classe);
+                    perso1.position = perso1.position --;
+                    refreshPos();
+                    addImage2(perso1.position, perso1.avatar, perso1.classe);
+                break;
+                case 38 :
+                    remove(perso1.classe);
+                    perso1.position = perso1.position - 10;
+                    refreshPos();
+                    addImage2(perso1.position, perso1.avatar, perso1.classe);
+                break;
+                case 40 :
+                    remove(perso1.classe);
+                    perso1.position = perso1.position + 10;
+                    refreshPos();
+                    addImage2(perso1.position, perso1.avatar, perso1.classe);
+                break;
+                default:
+                    refreshPos();
+            }
         });
 
-        
-    
-    
 });//Ne pas retirer, fin de la fonction de création du plateau
     
 //********************************DEBUT D'ESSAI DE PLACEMENT***********************************
@@ -368,11 +358,6 @@ function remove(classe){
     $("td").eq(classe).css("background-image", "none").removeClass("occuped").addClass("free");
 };
     
-
-    
-  
-//Fonction de récupération de la touche pressée
-
 //Préparation du déplacement, a revoir dans une méthode plus fonctionnelle à utiliser en POO 
 /*function move (perso){
 let choice = "";//A récupérer dans le DOM avec un choix du nombre de cases
@@ -385,10 +370,5 @@ let dir = "";//A récupérer avec la touche saisie sur les flèches du clavier
 
 //La même chose en POO, appelle la méthode attribuée au personnage
     perso1.move;
-    
-    
-
-
-
 
 });//Ne pas retirer, fin de la fonction de chargement du DOM

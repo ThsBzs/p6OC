@@ -211,9 +211,9 @@ $('#place').click(function(e){
     //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
     function check(value1, value2){
 	   if (value1 != value2 && value1 != value2 -11 && value1 != value2 -10 && value1 != value2 -9 && value1 != value2 -1 && value1 != value2 +1 && value1 != value2 +9 && value1 != value2 +10 && value1 != value2 +11){
-		arr.push(value1);
+           arr.push(value1);
+	   };
         return arr;
-	};
 };
     //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
     let arr = [];
@@ -357,7 +357,6 @@ console.log(dir);
         
         
         });
-        console.log("Click sur Battlefield");
 
         
     

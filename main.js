@@ -297,58 +297,45 @@ function refreshPos(){
 };
 
 refreshPos();
+    
  //Essai de déplacement de la fonction de récupération des touches pour voir si elle fonctionne
-/*function move(){
-    $('#playbloard1').keydown(function(event){
-        dir = event.which;
-    })
-console.log(dir);
-};
-    move();*/
-
-//Essai de cette même fonction, plus complète
-
-    /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
-    Ne pas oublier la possibilité qu'une case soit occupée.*/
-    //Essai d'ajout d'un focus avec .click sur battelfield pour les déplacements
-
-        $('#playBoard1').keypress(function(e){
-            dir = e.which();
-            console.log(dir);
-            //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
-            function addImage2(position, avatar, classe){
-                let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
-                return result;
-            };
-            switch(dir){
-                case 39 :
-                    remove(perso1.classe);
-                    perso1.position = perso1.position ++;
-                    refreshPos();
-                    addImage2(perso1.position, perso1.avatar, perso1.classe);
-                break;
-                case 37 :
-                    remove(perso1.classe);
-                    perso1.position = perso1.position --;
-                    refreshPos();
-                    addImage2(perso1.position, perso1.avatar, perso1.classe);
-                break;
-                case 38 :
-                    remove(perso1.classe);
-                    perso1.position = perso1.position - 10;
-                    refreshPos();
-                    addImage2(perso1.position, perso1.avatar, perso1.classe);
-                break;
-                case 40 :
-                    remove(perso1.classe);
-                    perso1.position = perso1.position + 10;
-                    refreshPos();
-                    addImage2(perso1.position, perso1.avatar, perso1.classe);
-                break;
-                default:
-                    refreshPos();
-            }
-        });
+    $('#playBoard1').keypress(function(e){
+        dir = e.which();
+        console.log(dir);
+        //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
+        function addImage2(position, avatar, classe){
+            let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
+            return result;
+         };
+        switch(dir){
+            case 39 :
+                remove(perso1.classe);
+                perso1.position = perso1.position ++;
+                refreshPos();
+                addImage2(perso1.position, perso1.avatar, perso1.classe);
+            break;
+            case 37 :
+                remove(perso1.classe);
+                perso1.position = perso1.position --;
+                refreshPos();
+                addImage2(perso1.position, perso1.avatar, perso1.classe);
+            break;
+            case 38 :
+                remove(perso1.classe);
+                perso1.position = perso1.position - 10;
+                refreshPos();
+                addImage2(perso1.position, perso1.avatar, perso1.classe);
+            break;
+            case 40 :
+                remove(perso1.classe);
+                perso1.position = perso1.position + 10;
+                refreshPos();
+                addImage2(perso1.position, perso1.avatar, perso1.classe);
+            break;
+            default:
+                refreshPos();
+        }
+    });
 
 });//Ne pas retirer, fin de la fonction de création du plateau
     

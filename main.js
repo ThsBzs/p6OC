@@ -58,7 +58,7 @@ class Perso {
     move(perso){
     //Préparation d'une fonction de retrait du CSS pour générer le déplacement
         function remove(classe){
-            $("td").eq(classe).css("background-image", "none").removeClass("occuped").addClass("free");
+            $('#' + classe).css("background-image", "none").removeClass("occuped").addClass("free");
         };
     /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
     Ne pas oublier la possibilité qu'une case soit occupée.*/
@@ -291,6 +291,9 @@ function refreshPos(){
     w2.position = position(".W2");
     w3.position = position(".W3");
     w4.position = position(".W4");
+    arrayPos = [perso1.position, perso2.position, w1.position, w3.position, w4.position];
+    return arrayPos;
+    
     /*Ancien essai avec un array. Récupérer la position depuis l'objet me semble en fait plus facile.
     arrayPos = [posP1, posP2, posW1, posW2, posW3, posW4];
     return arrayPos;*/
@@ -298,9 +301,11 @@ function refreshPos(){
 
 refreshPos();
     
- //Essai de déplacement de la fonction de récupération des touches pour voir si elle fonctionne
-    $('#playBoard1').keypress(function(e){
-        dir = e.which();
+ //Fonction de récupération de la touche pressée. ATTENTION, ça fonctionne en partie, voir comment mettre à jour la position
+ //Les positions ne sont pas encore mises à jour. Il faut les modifier, puis les récupérer avec arrayPos, pour réussir le déplacement
+ //Par ailleurs, la fonction remove() ne fonctionne pas encore. Voir pourquoi.
+    $(document).keydown(function(e){
+        dir = e.which;
         console.log(dir);
         //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
         function addImage2(position, avatar, classe){
@@ -342,7 +347,7 @@ refreshPos();
 //********************************DEBUT D'ESSAI DE PLACEMENT***********************************
 //Fonction de suppression du css pour retirer l'image
 function remove(classe){
-    $("td").eq(classe).css("background-image", "none").removeClass("occuped").addClass("free");
+    $('#' + classe).css("background-image", "none").removeClass("occuped").addClass("free");
 };
     
 //Préparation du déplacement, a revoir dans une méthode plus fonctionnelle à utiliser en POO 

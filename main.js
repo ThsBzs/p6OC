@@ -125,7 +125,6 @@ class Board{
     this.lines = lines;
     this.cases = cases;
     }
- 
 };
 
 
@@ -206,7 +205,7 @@ $('#place').click(function(e){
     function addImage(avatar, classe){
         let result =  $("td").eq(arr[arrIndex]).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
         return result;
-    }
+    };
     //Fonction de vérification de 2 valeurs avant ajout dans le tableau
     //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
     function check(value1, value2){
@@ -214,7 +213,7 @@ $('#place').click(function(e){
            arr.push(value1);
 	   };
         return arr;
-};
+    };
     //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
     let arr = [];
     //Ajout de 15 valeurs dans le tableau
@@ -262,15 +261,15 @@ $('#place').click(function(e){
                 break;
                 default:
                     arrIndex++;             
-            }
+            };
         } else if (arrIndex == 14) {//1 tour pour le perso1
             addImage(perso1.avatar, perso1.classe);
             arrIndex ++;
         } else if (arrIndex == 15) {//1 dernier tour pour le perso2
             addImage(perso2.avatar, perso2.classe);
-        }
+        };
     };
-    refreshPos()//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
+    refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
         console.log(perso1.position);
 
     
@@ -314,7 +313,7 @@ console.log(dir);
     Ne pas oublier la possibilité qu'une case soit occupée.*/
     //Essai d'ajout d'un focus avec .click sur battelfield pour les déplacements
 
-        $('#battlefield').keypress(function(e){
+        $('#playBoard1').keypress(function(e){
         dir = e.charCode();
         console.log(dir);
         //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur

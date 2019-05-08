@@ -199,43 +199,41 @@ $('#place').click(function(e){
         aGriser = (Math.floor(Math.random()*free.length));//Renvoie une valeur au hasard dans ce tableau  
         return aGriser;
     };
-    //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
-    let arr = [];
-    while(arr.length<=13){//On limite la taille du tableau 
-        melt();
-        if(!arr.includes(aGriser)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
-            arr.push(aGriser);
-        };
-    };
     
-    //Fonction pour les personnages : on attribuera des intervalles permettant de limiter leur placement initial pour éviter qu'ils ne se touchent au départ
-    function aleatoire(min, max){
-        result = Math.floor(Math.random()* (max-min +1)) + min;
-        return result;
-    };
-    
-    /*Fonction pour placer les éléments et classes passés en paramètre
+        /*Fonction pour placer les éléments et classes passés en paramètre
     avatar = objet.avatar
     cat = classe ajoutée*/
     function addImage(avatar, classe){
         let result =  $("td").eq(arr[arrIndex]).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
         return result;
     }
-    
-    
-    //Rappel de la boucle avec cette nouvelle fonction
+    //Fonction de vérification de 2 valeurs avant ajout dans le tableau
+    //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
+    function check(value1, value2){
+	   if (value1 != value2 && value1 != value2 -11 && value1 != value2 -10 && value1 != value2 -9 && value1 != value2 -1 && value1 != value2 +1 && value1 != value2 +9 && value1 != value2 +10 && value1 != value2 +11){
+		arr.push(value1);
+        return arr;
+	};
+};
+    //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
+    let arr = [];
+    //Ajout de 15 valeurs dans le tableau
     while(arr.length<=14){//On limite la taille du tableau 
-        aleatoire(0, 39);
-        if(!arr.includes(result)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
-            arr.push(result);
+        melt();
+        if(!arr.includes(aGriser)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
+            arr.push(aGriser);
         };
     };
+    //Ajout du P2 dans le tableau, en vérifiant sa proximité avec P1
      while(arr.length<=15){//On limite la taille du tableau 
-        aleatoire(50, 99);
-        if(!arr.includes(result)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
-            arr.push(result);
-        };
+         melt();
+         if(!arr.includes(aGriser)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
+             //Si cette valeur n'est pas trop proche de la précédente
+             check(aGriser, arr[14]);
+             //check insère aGriser si sa valeur passe toutes les vérifications
+        }; 
     };
+    
     console.log(arr);
     let arrIndex = 0;
     //arr[arrIndex] permet de faire correspondre l'index du plateau (arr) avec la valeur d'une boucle de 16 tours utilisée ensuite (arrIndex)
@@ -302,14 +300,67 @@ function refreshPos(){
 
 refreshPos();
  //Essai de déplacement de la fonction de récupération des touches pour voir si elle fonctionne
-function move(){
+/*function move(){
     $('#playbloard1').keydown(function(event){
         dir = event.which;
     })
 console.log(dir);
 };
-    move();
+    move();*/
+
+//Essai de cette même fonction, plus complète
+
+    /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
+    Ne pas oublier la possibilité qu'une case soit occupée.*/
+    //Essai d'ajout d'un focus avec .click sur battelfield pour les déplacements
+
+        $('#battlefield').keypress(function(e){
+        dir = e.charCode();
+        console.log(dir);
+        //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
+        function addImage2(position, avatar, classe){
+            let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
+            return result;
+        };
+
+    
+     switch(dir){
+            case 39 :
+                remove(perso1.classe);
+                perso1.position = perso1.position ++;
+                refreshPos();
+                addImage2(perso1.position, perso1.avatar, perso1.classe);
+            break;
+            case 37 :
+                remove(perso1.classe);
+                perso1.position = perso1.position --;
+                refreshPos();
+                addImage2(perso1.position, perso1.avatar, perso1.classe);
+            break;
+            case 38 :
+                remove(perso1.classe);
+                perso1.position = perso1.position - 10;
+                refreshPos();
+                addImage2(perso1.position, perso1.avatar, perso1.classe);
+            break;
+            case 40 :
+                remove(perso1.classe);
+                perso1.position = perso1.position + 10;
+                refreshPos();
+                addImage2(perso1.position, perso1.avatar, perso1.classe);
+            break;
+            default:
+                refreshPos();
+        }
+    /*let positionA = ;*/
         
+        
+        
+        });
+        console.log("Click sur Battlefield");
+
+        
+    
     
 });//Ne pas retirer, fin de la fonction de création du plateau
     

@@ -11,12 +11,13 @@ let perso1,
     lance,
     fleau,
     occupe,
+    free,//Tableau pour le positionnement. Est utilisé pour les déplacements
 //Préparation du tableau
     aGriser,//Correspond aux cases occupées, sera défini dans la fonction d'occupation du tableau
     result,//Correspond aux index renvoyés par la fonction aleatoire pour le placement des persos
     tableau,//Correspond au tableau global, mis à jour pour les positions
 //Préparation des déplacements
-    arrayPos,//Tableau des positions des éléments déplaçables - SUPPRIMABLE SI REFRESHPOS RESTE EN objet.position
+    arrayPos = [0, 1, 2, 3, 4, 5],//Tableau des positions des éléments déplaçables - SUPPRIMABLE SI REFRESHPOS RESTE EN objet.position
     dir,//Sera utilisée dans la méthode pour définir la touche pressée
     posP1,//positions
     posP2,
@@ -55,10 +56,11 @@ class Perso {
         let degatsMin = coupRecu - 50;
     }
     //Méthode de déplacement
-    move(Perso){
+    move(index){
         //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
         function addImage2(position, avatar, classe){
-            let result =  $("td").eq(position).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
+            let result = $("td").eq(tableau[position]).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
+            console.log("AddImage");
             return result;
         };
         //Préparation d'une fonction de retrait du CSS pour générer le déplacement
@@ -66,55 +68,49 @@ class Perso {
             $("td").eq(position).css("background-image", "none").removeClass(classe).addClass("free");
             console.log("remove");
         };
-        function refreshPos(){
-            //Mise à jour du tableau avec les nouvelles positions
-            tableau = Array.from(document.querySelectorAll("td"));
-            //Cette fonction renvoie la position de l'élément passé en paramètre.
-            function position(elt){
-                let result = tableau.indexOf(document.querySelector(elt)); 
-                return result;
-            };
-            Perso.position = position(Perso.classe);
-            console.log("Perso.position en refresh : " + Perso.position);
-            return Perso.position;  
-
-        /*Ancien essai avec un array. Récupérer la position depuis l'objet me semble en fait plus facile.
-        arrayPos = [posP1, posP2, posW1, posW2, posW3, posW4];
-        return arrayPos;*/
-        };
-        /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
-        Ne pas oublier la possibilité qu'une case soit occupée.*/
+        
         $(document).keydown(function(e){
             dir = e.which;
-            console.log(dir);
             switch(dir){
                 case 39 : //Droite
-                    remove(Perso.position, Perso.classe);
-                    Perso.position =  Perso.position + 1;
+                    console.log("Position avant mouvement : " + arrayPos[index]);
+                    remove(arrayPos[index], this.classe);
+                    this.position =  arrayPos[index] + 1;
+                    arrayPos[index] = this.position;
+                    addImage2(this.position, this.avatar, this.classe);  
                     refreshPos();
-                    console.log("Position après appui : " + Perso.position);
-                    addImage2(Perso.position, Perso.avatar, Perso.classe);            
+                    console.log("Position après mouvement : " + this.position);
+                              
                     break;
                 case 37 ://Gauche
-                    remove(Perso.position, Perso.classe);
-                    Perso.position = Perso.position - 1;
+                    console.log("Position avant mouvement : " + arrayPos[index]);
+                    remove(arrayPos[index], this.classe);
+                    this.position = arrayPos[index] - 1;
+                    arrayPos[index] = this.position;
+                    addImage2(this.position, this.avatar, this.classe);
                     refreshPos();
-                    console.log("Position après appui : " + Perso.position);
-                    addImage2(Perso.position, Perso.avatar, Perso.classe);
+                    console.log("Position après mouvement : " + this.position);
+                    this.position
                 break;
                 case 38 ://Haut
-                    remove(Perso.position, Perso.classe);
-                    Perso.position = Perso.position - 10;
+                    console.log("Position avant mouvement : " + arrayPos[index]);
+                    remove(arrayPos[index], this.classe);
+                    this.position = arrayPos[index] - 10;
+                    arrayPos[index] = this.position;
+                    addImage2(this.position, this.avatar, this.classe);
                     refreshPos();
-                    console.log("Position après appui : " + Perso.position);
-                    addImage2(Perso.position, Perso.avatar, Perso.classe);
+                    console.log("Position après mouvement : " + this.position);
+                    
                 break;
                 case 40 ://Bas
-                    remove(Perso.position, Perso.classe);
-                    Perso.position = Perso.position + 10; 
+                    console.log("Position avant mouvement : " + arrayPos[index]);
+                    remove(arrayPos[index], this.classe);
+                    this.position = arrayPos[index] + 10;
+                    arrayPos[index] = this.position;
+                    addImage2(this.position, this.avatar, this.classe);
                     refreshPos();
-                    console.log("Position après appui : " + Perso.position);
-                    addImage2(Perso.position, Perso.avatar, Perso.classe);
+                    console.log("Position après mouvement : " + this.position);
+                    
                 break;
                 default:
                     refreshPos();
@@ -154,15 +150,20 @@ class Board{
     }
 };
 
+//Fonction de suppression du css pour retirer l'image
+function remove(position){
+    $("td").eq(position).css("background-image", "none").removeClass("occuped").addClass("free");
+};
+    
 
 //Création des personnages
-perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", "", "P1");
-perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", "", "P2");
+perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1");
+perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", arrayPos[1], "P2");
 //Création des armes
-w1 = new Arme(epee, 20, "images/epeeSmall.jpg" , "", "W1");
-w2 = new Arme(lance, 30, "images/hacheSmall.jpg" , "", "W2");
-w3 = new Arme(hache, 25, "images/lanceSmall.jpg" , "", "W3");
-w4 = new Arme(fleau, 25, "images/fleauSmall.jpg" , "", "W4");
+w1 = new Arme(epee, 20, "images/epeeSmall.jpg" , arrayPos[2], "W1");
+w2 = new Arme(lance, 30, "images/hacheSmall.jpg" , arrayPos[3], "W2");
+w3 = new Arme(hache, 25, "images/lanceSmall.jpg" , arrayPos[4], "W3");
+w4 = new Arme(fleau, 25, "images/fleauSmall.jpg" , arrayPos[5], "W4");
 //Création des blocs occupés
 occupe = new Occuped("images/grisSmall.jpg", "occuped");
 
@@ -209,11 +210,8 @@ function refreshPos(){
     w3.position = position(".W3");
     w4.position = position(".W4");
     arrayPos = [perso1.position, perso2.position, w1.position, w3.position, w4.position];
+    console.log(arrayPos);
     return arrayPos;
-    
-    /*Ancien essai avec un array. Récupérer la position depuis l'objet me semble en fait plus facile.
-    arrayPos = [posP1, posP2, posW1, posW2, posW3, posW4];
-    return arrayPos;*/
 };
 //************************GENERATION DU PLATEAU***********************************
 //Action au clic sur "Lancer !"
@@ -277,6 +275,22 @@ $('#place').click(function(e){
         }; 
     };
     
+
+    //Piste de boucle imbriquée pour la fonction check
+ /*   
+i= 1;
+
+while(i<14){ //Toutes les valeurs de 0 à 15 
+	j=0;
+	blablabla;
+	while(j<i){//Vérifie une valeur avant de l'ajouter dans le tableau
+		j++;
+	}
+	i++;
+};*/
+    
+   
+    
     console.log(arr);
     let arrIndex = 0;
     //arr[arrIndex] permet de faire correspondre l'index du plateau (arr) avec la valeur d'une boucle de 16 tours utilisée ensuite (arrIndex)
@@ -316,107 +330,17 @@ $('#place').click(function(e){
     refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
         console.log(perso1.position);
 
-//Sortie provisoire de refreshPos pour pouvoir y accéder partout
-/*Pour le moment, cette fonction de récupération des positions reste ici, elle devra être sortie de la génération 
-du tableau par la suite, ne garder ici que la fonction refresh pour mettre à jour les positions. Du coup, 
-régler les problèmes de scope avant toute chose.*/
-//Fonction globale pour mettre à jour les positions de tous les éléments déplacables
-/*function refreshPos(){
-    //Mise à jour du tableau avec les nouvelles positions
-    tableau = Array.from(document.querySelectorAll("td"));
-    //Cette fonction renvoie la position de l'élément passé en paramètre.
-    function position(elt){
-        let result = tableau.indexOf(document.querySelector(elt)); 
-        return result;
-    };
-    perso1.position = position(".P1");
-    perso2.position = position(".P2");
-    w1.position = position(".W1");
-    w2.position = position(".W2");
-    w3.position = position(".W3");
-    w4.position = position(".W4");
-    arrayPos = [perso1.position, perso2.position, w1.position, w3.position, w4.position];
-    return arrayPos;
-    
-    /*Ancien essai avec un array. Récupérer la position depuis l'objet me semble en fait plus facile.
-    arrayPos = [posP1, posP2, posW1, posW2, posW3, posW4];
-    return arrayPos;*/
-/*};*/
 
-    
-/* //Fonction de récupération de la touche pressée. ATTENTION, ça fonctionne en partie, voir comment mettre à jour la position
- //Les positions ne sont pas encore mises à jour. Il faut les modifier, puis les récupérer avec arrayPos, pour réussir le déplacement
- //Par ailleurs, la fonction remove() ne fonctionne pas encore. Voir pourquoi.
-    $(document).keydown(function(e){
-        dir = e.which;
-        console.log(dir);
-        //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
-        function addImage2(position, avatar, classe){
-            let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
-            return result;
-         };
-        switch(dir){
-            case 39 : //Droite
-                remove(perso1.position);
-                console.log(" Ancienne position : " + perso1.position);
-                perso1.position += 1;
-                console.log("Nouvelle position : " + perso1.position);
-                refreshPos();
-                addImage2(arrayPos[0], perso1.avatar, perso1.classe);
-            break;
-            case 37 ://Gauche
-                remove(perso1.position);
-                console.log(" Ancienne position : " + perso1.position);
-                perso1.position -= 1;
-                console.log("Nouvelle position : " + perso1.position);
-                refreshPos();
-                addImage2(arrayPos[0], perso1.avatar, perso1.classe);
-            break;
-            case 38 ://Haut
-                remove(perso1.position);
-                console.log(" Ancienne position : " + perso1.position);
-                perso1.position -= 10;
-                console.log("Nouvelle position : " + perso1.position);
-                refreshPos();
-                addImage2(arrayPos[0], perso1.avatar, perso1.classe);
-            break;
-            case 40 ://Bas
-                remove(perso1.position);
-                console.log(" Ancienne position : " + perso1.position);
-                perso1.position += 10;
-                console.log("Nouvelle position : " + perso1.position);
-                refreshPos();
-                addImage2(arrayPos[0], perso1.avatar, perso1.classe);
-            break;
-            default:
-                refreshPos();
-        }
-    });*/
-refreshPos();
+refreshPos(perso1);
+    console.log(perso1.position);
 });//Ne pas retirer, fin de la fonction de création du plateau
 
-console.log(perso1.position);
-    
-//********************************DEBUT D'ESSAI DE PLACEMENT***********************************
-//Fonction de suppression du css pour retirer l'image
-function remove(position){
-    $("td").eq(position).css("background-image", "none").removeClass("occuped").addClass("free");
-};
-    
-//Préparation du déplacement, a revoir dans une méthode plus fonctionnelle à utiliser en POO 
-/*function move (perso){
-let choice = "";//A récupérer dans le DOM avec un choix du nombre de cases
-let dir = "";//A récupérer avec la touche saisie sur les flèches du clavier
-    for (i=0; i<=choice; i++){
-        move(player);
-        refreshPos();
-    }
-};*/
 
-//La même chose en POO, appelle la méthode attribuée au personnage
+    
+//********************************DEBUT D'ESSAI DE  DEPLACEMENT***********************************
 $(document).keydown(function(){
-console.log("Appui");
-  perso1.move(perso1); 
+refreshPos();
+  perso1.move(0); 
 });
 
 

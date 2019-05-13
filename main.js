@@ -62,8 +62,8 @@ class Perso {
         };
     /*Définir ici les règles de déplacement, en incluant les exceptions de cases bloquées et un nombre max de cases déplacées, ainsi que la/les directions.
     Ne pas oublier la possibilité qu'une case soit occupée.*/
-
-    $('#battlefield').keypress(function(e){
+    function move(perso){
+    $('document').keypress(function(e){
         dir = e.which;
         console.log(dir);
         remove(this.classe);
@@ -93,6 +93,7 @@ class Perso {
             return result;
         };
         addImage2(this.position, this.avatar, this.classe);
+    };
     };
 };
 
@@ -301,6 +302,42 @@ function refreshPos(){
 };
 
 refreshPos();
+    
+//La même chose en POO, appelle la méthode attribuée au personnage
+    perso1.move;
+    function move(perso){
+    $('document').keypress(function(e){
+        dir = e.which;
+        console.log(dir);
+        remove(this.classe);
+        return dir;
+    })
+     switch(dir){
+            case 39 :
+                perso.position = perso.position ++;
+            break;
+            case 37 :
+                perso.position = perso.position --;
+            break;
+            case 38 :
+                perso.position = perso.position - 10;
+            break;
+            case 40 :
+                perso.position = perso.position + 10;
+            break;
+            default:
+                refreshPos();
+        }
+    /*let positionA = ;*/
+        
+        //Fonction addImage semblable à la première (ligne 200), mais utilisant directement la position du joueur
+        function addImage2(position, avatar, classe){
+            let result =  $("td").eq(position).append($("<img src = " + avatar + ">")).removeClass("free").addClass(classe);
+            return result;
+        };
+        addImage2(perso1.position, perso1.position, perso1.position);
+    };
+    move(perso1);
  
 });//Ne pas retirer, fin de la fonction de création du plateau
     
@@ -323,9 +360,7 @@ let dir = "";//A récupérer avec la touche saisie sur les flèches du clavier
     }
 };*/
 
-//La même chose en POO, appelle la méthode attribuée au personnage
-    perso1.move;
-    
+
     
 
 

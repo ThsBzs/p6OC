@@ -342,6 +342,6 @@ $(document).keydown(function(){
 refreshPos();
   perso1.move(0); 
 });
-
+ 
 
 });//Ne pas retirer, fin de la fonction de chargement du DOM

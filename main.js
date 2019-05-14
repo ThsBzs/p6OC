@@ -345,3 +345,31 @@ refreshPos();
  
 
 });//Ne pas retirer, fin de la fonction de chargement du DOM
+
+//Première version d'une boucle pour le placement avec vérification des positions
+    //Piste de boucle imbriquée pour la fonction check
+
+let val = arr.length;
+while (val < 14) {
+    let j = 0;
+    melt();
+    while(j<val){
+        if(!arr.includes(aGriser)){
+            check(aGriser, arr[j]);
+            console.log("Premier" + j);
+        };
+        j++;
+        console.log("Second" + j);
+    };
+};
+
+ /*   
+i= 1;
+while(i<14){ //Toutes les valeurs de 0 à 15 
+	j=0;
+	blablabla;
+	while(j<i){//Vérifie une valeur avant de l'ajouter dans le tableau
+		j++;
+	}
+	i++;
+};*/

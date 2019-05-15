@@ -73,13 +73,13 @@ class Perso {
             dir = e.which;
             switch(dir){
                 case 39 : //Droite
-                    console.log("Position avant mouvement : " + arrayPos[index]);
-                    remove(arrayPos[index], this.classe);
-                    this.position =  arrayPos[index] + 1;
-                    arrayPos[index] = this.position;
-                    addImage2(this.position, this.avatar, this.classe);  
-                    refreshPos();
-                    console.log("Position après mouvement : " + this.position);
+                    console.log("Position avant mouvement : " + arrayPos[index]);//Renvoie la position récupérée dans le tableau arrayPos à l'index passé en paramètre
+                    remove(arrayPos[index], this.classe);//Retire l'image avec la fonction remove()
+                    this.position =  arrayPos[index] + 1;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
+                   // arrayPos[index] = this.position;//Est supposé ajouter une couche de vérification en mettant à jour this.position, ne fonctionne pas
+                    addImage2(this.position, this.avatar, this.classe);// Devrait théoriquement ajouter, via la fonction addImage2(), le CSS.
+                    refreshPos();//Met à jour le tableau des positions. Ne fonctionne pas correctement ici. 
+                    console.log("Position après mouvement : " + this.position); //Renvoie la nouvelle position. Fonctionne, mais la position n'est pas mise à jour dans arrayPos.
                               
                     break;
                 case 37 ://Gauche
@@ -197,6 +197,7 @@ p2.addEventListener("submit", function(e){
 
 function refreshPos(){
     //Mise à jour du tableau avec les nouvelles positions
+    arrayPos = [];
     tableau = Array.from(document.querySelectorAll("td"));
     //Cette fonction renvoie la position de l'élément passé en paramètre.
     function position(elt){
@@ -251,14 +252,15 @@ $('#place').click(function(e){
     //Fonction de vérification de 2 valeurs avant ajout dans le tableau
     //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
     function check(value1, value2){
-	   if (value1 != value2 && value1 != value2 -11 && value1 != value2 -10 && value1 != value2 -9 && value1 != value2 -1 && value1 != value2 +1 && value1 != value2 +9 && value1 != value2 +10 && value1 != value2 +11){
+	   if (!arr.includes(value1) && !arr.includes(value2) && value1 != value2 && value1 != value2 -11 && value1 != value2 -10 && value1 != value2 -9 && value1 != value2 -1 && value1 != value2 +1 && value1 != value2 +9 && value1 != value2 +10 && value1 != value2 +11){
            arr.push(value1);
 	   };
         return arr;
     };
     //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
     let arr = [];
-    //Ajout de 15 valeurs dans le tableau
+    //************************MISE EN ATTENTE POUR PASSAGE EN BOUCLE SESSION MENTORAT**************************
+/*    //Ajout de 15 valeurs dans le tableau
     while(arr.length<=14){//On limite la taille du tableau 
         melt();
         if(!arr.includes(aGriser)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
@@ -273,13 +275,27 @@ $('#place').click(function(e){
              check(aGriser, arr[14]);
              //check insère aGriser si sa valeur passe toutes les vérifications
         }; 
-    };
-    
+    };*/
+    //********************************FIN DE MISE EN ATTENTE******************************
 
+    //Première version d'une boucle pour le placement avec vérification des positions
     //Piste de boucle imbriquée pour la fonction check
+
+let val = 1;
+ 
+while (val < 17) {
+    let j = 0;
+    while(j < val){
+        melt();
+        check(aGriser, arr[j]);
+        //console.log(arr.indexOf(aGriser));
+        j++;
+    };
+    val ++;
+};
+
  /*   
 i= 1;
-
 while(i<14){ //Toutes les valeurs de 0 à 15 
 	j=0;
 	blablabla;
@@ -288,9 +304,7 @@ while(i<14){ //Toutes les valeurs de 0 à 15
 	}
 	i++;
 };*/
-    
-   
-    
+       
     console.log(arr);
     let arrIndex = 0;
     //arr[arrIndex] permet de faire correspondre l'index du plateau (arr) avec la valeur d'une boucle de 16 tours utilisée ensuite (arrIndex)
@@ -346,30 +360,3 @@ refreshPos();
 
 });//Ne pas retirer, fin de la fonction de chargement du DOM
 
-//Première version d'une boucle pour le placement avec vérification des positions
-    //Piste de boucle imbriquée pour la fonction check
-
-let val = arr.length;
-while (val < 14) {
-    let j = 0;
-    melt();
-    while(j<val){
-        if(!arr.includes(aGriser)){
-            check(aGriser, arr[j]);
-            console.log("Premier" + j);
-        };
-        j++;
-        console.log("Second" + j);
-    };
-};
-
- /*   
-i= 1;
-while(i<14){ //Toutes les valeurs de 0 à 15 
-	j=0;
-	blablabla;
-	while(j<i){//Vérifie une valeur avant de l'ajouter dans le tableau
-		j++;
-	}
-	i++;
-};*/

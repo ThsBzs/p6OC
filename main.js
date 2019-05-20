@@ -17,14 +17,15 @@ let perso1,
     result,//Correspond aux index renvoyés par la fonction aleatoire pour le placement des persos
     tableau,//Correspond au tableau global, mis à jour pour les positions
 //Préparation des déplacements
-    arrayPos = [0, 1, 2, 3, 4, 5],//Tableau des positions des éléments déplaçables - SUPPRIMABLE SI REFRESHPOS RESTE EN objet.position
-    dir,//Sera utilisée dans la méthode pour définir la touche pressée
-    posP1,//positions
+    arrayPos = [],
+    //arrayPos = [0, 1, 2, 3, 4, 5],//Tableau des positions des éléments déplaçables - SUPPRIMABLE SI REFRESHPOS RESTE EN objet.position ESSAI DE MASQUAGE
+    dir;//Sera utilisée dans la méthode pour définir la touche pressée
+/*    posP1,//positions
     posP2,
     posW1,
     posW2,
     posW3,
-    posW4;
+    posW4;*/
 
 //*****************DECLARATION DES OBJETS, CLASSES ET METHODES******************
 //Création d'une classe personnage
@@ -55,67 +56,61 @@ class Perso {
     defense(){
         let degatsMin = coupRecu - 50;
     }
-    //Méthode de déplacement
-    move(index){
+
+    //Méthode de déplacement n'utilisant pas de paramètre 
+    move(){
         //Fonction addImage semblable à la première (ligne 206), mais utilisant directement la position du joueur
         function addImage2(position, avatar, classe){
-            let result = $("td").eq(tableau[position]).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
-            console.log("AddImage");
+            let result = $("td").eq(position).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
             return result;
         };
         //Préparation d'une fonction de retrait du CSS pour générer le déplacement
         function remove(position, classe){
             $("td").eq(position).css("background-image", "none").removeClass(classe).addClass("free");
-            console.log("remove");
         };
         
-        $(document).keydown(function(e){
-            dir = e.which;
+        //Essai de regroupement des déplacements sur une seule fonction, pas encore au point
+        /*function bouge(value){
+                    remove(this.position, this.classe);//Retire l'image avec la fonction remove()
+                    this.position =  this.position + value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
+                    addImage2(this.position, this.avatar, this.classe);// Devrait théoriquement ajouter, via la fonction addImage2(), le CSS.//Met à jour le tableau des positions. Ne fonctionne pas correctement ici. 
+                    refreshPos();
+        }*/
+        //$(document).keydown(function(e){
+            //dir = e.which;
             switch(dir){
                 case 39 : //Droite
-                    console.log("Position avant mouvement : " + arrayPos[index]);//Renvoie la position récupérée dans le tableau arrayPos à l'index passé en paramètre
-                    remove(arrayPos[index], this.classe);//Retire l'image avec la fonction remove()
-                    this.position =  arrayPos[index] + 1;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
-                   // arrayPos[index] = this.position;//Est supposé ajouter une couche de vérification en mettant à jour this.position, ne fonctionne pas
-                    addImage2(this.position, this.avatar, this.classe);// Devrait théoriquement ajouter, via la fonction addImage2(), le CSS.
-                    refreshPos();//Met à jour le tableau des positions. Ne fonctionne pas correctement ici. 
-                    console.log("Position après mouvement : " + this.position); //Renvoie la nouvelle position. Fonctionne, mais la position n'est pas mise à jour dans arrayPos.
-                              
+                    //bouge(+1);
+                    remove(this.position, this.classe);//Retire l'image avec la fonction remove()
+                    this.position += 1;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
+                    addImage2(this.position, this.avatar, this.classe);// Devrait théoriquement ajouter, via la fonction addImage2(), le CSS.//Met à jour le tableau des positions. Ne fonctionne pas correctement ici. 
+                    refreshPos();     
                     break;
                 case 37 ://Gauche
-                    console.log("Position avant mouvement : " + arrayPos[index]);
-                    remove(arrayPos[index], this.classe);
-                    this.position = arrayPos[index] - 1;
-                    arrayPos[index] = this.position;
+                    //bouge(-1);
+                    remove(this.position, this.classe);
+                    this.position -= 1;
                     addImage2(this.position, this.avatar, this.classe);
                     refreshPos();
-                    console.log("Position après mouvement : " + this.position);
-                    this.position
                 break;
                 case 38 ://Haut
-                    console.log("Position avant mouvement : " + arrayPos[index]);
-                    remove(arrayPos[index], this.classe);
-                    this.position = arrayPos[index] - 10;
-                    arrayPos[index] = this.position;
+                    //bouge(-10);
+                    remove(this.position, this.classe);
+                    this.position -= 10;
                     addImage2(this.position, this.avatar, this.classe);
                     refreshPos();
-                    console.log("Position après mouvement : " + this.position);
-                    
                 break;
                 case 40 ://Bas
-                    console.log("Position avant mouvement : " + arrayPos[index]);
-                    remove(arrayPos[index], this.classe);
-                    this.position = arrayPos[index] + 10;
-                    arrayPos[index] = this.position;
+                    //bouge(+10);
+                    remove(this.position, this.classe);
+                    this.position += 10;
                     addImage2(this.position, this.avatar, this.classe);
                     refreshPos();
-                    console.log("Position après mouvement : " + this.position);
-                    
                 break;
                 default:
                     refreshPos();
             }   
-        });
+        //});
     };
 };
 
@@ -197,10 +192,11 @@ p2.addEventListener("submit", function(e){
 
 function refreshPos(){
     //Mise à jour du tableau avec les nouvelles positions
-    arrayPos = [];
+    arrayPos = [] ;
+    tableau = [];
     tableau = Array.from(document.querySelectorAll("td"));
     //Cette fonction renvoie la position de l'élément passé en paramètre.
-    function position(elt){
+    function position(elt){//elt est la classe correspondante au perso concerné
         let result = tableau.indexOf(document.querySelector(elt)); 
         return result;
     };
@@ -211,8 +207,8 @@ function refreshPos(){
     w3.position = position(".W3");
     w4.position = position(".W4");
     arrayPos = [perso1.position, perso2.position, w1.position, w3.position, w4.position];
-    console.log(arrayPos);
-    return arrayPos;
+    console.log("ArrayPos : " + arrayPos);
+    return arrayPos;//ArrayPos est le tableau des positions, permet de travailler ensuite sur toutes les positions
 };
 //************************GENERATION DU PLATEAU***********************************
 //Action au clic sur "Lancer !"
@@ -235,7 +231,6 @@ $('#place').click(function(e){
             $(this).append($('<td class="free">'));
         };
     });
-   
    
 //Lancement du positionnement de tous les éléments (cases occupées, armes et persos)
 //$("td").css({'background-color': 'white', "background-image": "none"}).removeClass("occuped").addClass("free");//On remet tout en blanc avant de relancer A CONSERVER, servira à réinitialiser le plateau
@@ -288,7 +283,7 @@ while (val < 17) {
     while(j < val){
         melt();
         check(aGriser, arr[j]);
-        //console.log(arr.indexOf(aGriser));
+        console.log(arr.indexOf(aGriser));
         j++;
     };
     val ++;
@@ -305,7 +300,7 @@ while(i<14){ //Toutes les valeurs de 0 à 15
 	i++;
 };*/
        
-    console.log(arr);
+    console.log("Arr = " + arr);
     let arrIndex = 0;
     //arr[arrIndex] permet de faire correspondre l'index du plateau (arr) avec la valeur d'une boucle de 16 tours utilisée ensuite (arrIndex)
     for(i=0; i<= 15; i++){
@@ -342,21 +337,17 @@ while(i<14){ //Toutes les valeurs de 0 à 15
         };
     };
     refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
-        console.log(perso1.position);
+    console.log("perso1.position : " + perso1.position);
 
-
-refreshPos(perso1);
-    console.log(perso1.position);
 });//Ne pas retirer, fin de la fonction de création du plateau
 
 
     
 //********************************DEBUT D'ESSAI DE  DEPLACEMENT***********************************
-$(document).keydown(function(){
-refreshPos();
-  perso1.move(0); 
+$(document).keydown(function(e){
+    refreshPos();
+    dir = e.which;
+    perso1.move(); 
 });
  
-
 });//Ne pas retirer, fin de la fonction de chargement du DOM
-

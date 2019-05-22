@@ -218,9 +218,6 @@ function checkPos(player){
     };
     refreshP1();
     refreshP2();
-    console.log("Arme P1 = " + perso1.arme);
-    console.log("Arme P2 = " + perso2.arme);
-    console.log("arrayPos = " + arrayPos);
 };
 
 //Fonctions d'affichage en HTML des caractéristiques des personnages, utilisée pour mettre à jour ces infos durant le jeu
@@ -348,13 +345,12 @@ $('#place').click(function(e){
 i = 1;
  
 while (i < 17) {
-    j = 0;
-    while(j < i){
-        melt();
+    melt();
+    for (j = 0; j <i; j++){
+       // melt();
         check(aGriser, arr[j]);
         //console.log("aGriser = " + aGriser);
         //console.log("arr = " + arr);
-        j++;
     };
     i ++;
 };

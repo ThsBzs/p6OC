@@ -24,8 +24,11 @@ body{
     margin-right: 10px;
 }
 /*Tableau*/
+table{
+	border-collapse: collapse;
+}
 table, th, td{
-    border: 1px solid black;
+    border: 2px solid black;
 }
 /*Cases occupées*/
 
@@ -49,4 +52,7 @@ ul{
 .avatar{
     padding-top: 10px;
     max-height: 200px;
+}
+.blue{
+    background-color: aqua;
 }

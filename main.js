@@ -64,7 +64,39 @@ class Perso {
     };
 
     //Méthode de déplacement n'utilisant pas de paramètre 
-    move(){ 
+    move(){
+        function removeBlue(){
+            $('td').hasClass("blue").removeClass("blue");
+        }
+        function addBlue(position){
+            $('td').eq(position).css("background-color", "blue");
+        };
+        
+        function possible(){
+            if ((!$('td').eq(this.position + 1).hasClass("occuped")) && 
+                (arrayRight.indexOf(this.position) == -1) &&
+                (!$('td').eq(this.position - 1).hasClass("occuped")) &&
+                (arrayLeft.indexOf(this.position) == -1) &&
+                (!$('td').eq(this.position - 10).hasClass("occuped")) && 
+                (arrayUp.indexOf(this.position) == -1) &&
+                (!$('td').eq(this.position + 10).hasClass("occuped")) && 
+                (arrayDown.indexOf(this.position) == -1)
+               ){
+                addBlue(this.position +10);
+                addBlue(this.position +20);
+                addBlue(this.position +30);
+                addBlue(this.position -10);
+                addBlue(this.position -20);
+                addBlue(this.position -30);
+                addBlue(this.position +1);
+                addBlue(this.position +2);
+                addBlue(this.position +3);
+                addBlue(this.position -1);
+                addBlue(this.position -2);
+                addBlue(this.position -3);
+            }
+                
+        };
         /*function moveUp(value){
             remove(Perso.position, Perso.classe);//Retire l'image avec la fonction remove()
                 Perso.position += value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
@@ -226,14 +258,16 @@ function refreshP1(){
         $('#setP1').append($('<li>Santé : ' + perso1.hp + '</li>'))
         .append($('<li>Dégâts : ' + perso1.degats + '</li>'))
             .append($('<li>Arme : ' + perso1.arme + '</li>'))
-                .append($('<li>Score : ' + perso1.score + '</li>'));
+                .append($('<li>Score : ' + perso1.score + '</li>'))
+                    .append($('<br/><input type="submit" value="Fin du tour" id="stopP1" action="#">'));
     };
 function refreshP2(){
         $('#setP2').empty();
         $('#setP2').append($('<li>Santé : ' + perso2.hp + '</li>'))
         .append($('<li>Dégâts : ' + perso2.degats + '</li>'))
             .append($('<li>Arme : ' + perso2.arme + '</li>'))
-                .append($('<li>Score : ' + perso2.score + '</li>'));
+                .append($('<li>Score : ' + perso2.score + '</li>'))
+                    .append($('<br/><input type="submit" value="Fin du tour" id="stopP2" action="#">'));
     };
     
     
@@ -409,17 +443,57 @@ while(i<14){ //Toutes les valeurs de 0 à 15
 
     
 //********************************DEBUT D'ESSAI DE  DEPLACEMENT***********************************
+    function removeBlue(){
+            $('td').hasClass("blue").removeClass("blue");
+        }
+    
+    function addBlue(position){
+            $('td').eq(position).addClass("blue");
+        };
+        
+        function possible(){
+            if ((!$('td').eq(this.position + 1).hasClass("occuped")) && 
+                (arrayRight.indexOf(this.position) == -1) &&
+                (!$('td').eq(this.position - 1).hasClass("occuped")) &&
+                (arrayLeft.indexOf(this.position) == -1) &&
+                (!$('td').eq(this.position - 10).hasClass("occuped")) && 
+                (arrayUp.indexOf(this.position) == -1) &&
+                (!$('td').eq(this.position + 10).hasClass("occuped")) && 
+                (arrayDown.indexOf(this.position) == -1)
+               ){
+                addBlue(this.position +10);
+                addBlue(this.position +20);
+                addBlue(this.position +30);
+                addBlue(this.position -10);
+                addBlue(this.position -20);
+                addBlue(this.position -30);
+                addBlue(this.position +1);
+                addBlue(this.position +2);
+                addBlue(this.position +3);
+                addBlue(this.position -1);
+                addBlue(this.position -2);
+                addBlue(this.position -3);
+            }
+                
+        };
+//Essai d'ajout de fond bleu sur les cases possibles pour le déplacement suivant
 //Fonction de déplacement provisoire, il faut encore ajouter la prise en compte du nombre de cases.
-$(document).keydown(function(e){
-    dir = e.which;
-    if (tour%2 == 0){
-        perso1.move();
-        tour ++;
-    } else {
-        perso2.move();
-        tour ++;
-    }
-});
+if (perso1.hp > 0 && perso2.hp > 0){
+    $(document).keydown(function(e){
+        dir = e.which;
+        if (tour%2 == 0){
+            perso1.move();
+            possible();
+            tour ++;
+        } else {
+            $('#stopP2').show();
+            perso2.move();
+            possible();
+            tour ++;
+        }
+    });
+}
+
 
 /*
 if (tour%2 == 0){

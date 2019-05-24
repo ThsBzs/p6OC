@@ -204,6 +204,7 @@ function addImage(position, avatar, classe){
         console.log("Arme P1 = " + perso1.arme);
         console.log("Arme P2 = " + perso2.arme);
         console.log("Perso.position = " + Perso.position);
+<<<<<<< HEAD
 
     }
 }*/
@@ -251,6 +252,8 @@ function checkPos(player){
     refreshP1();
     refreshP2();
 };
+    
+
 
 //Fonctions d'affichage en HTML des caractéristiques des personnages, utilisée pour mettre à jour ces infos durant le jeu
 function refreshP1(){
@@ -392,12 +395,21 @@ while (i < 17) {
  /*   
 i= 1;
 while(i<14){ //Toutes les valeurs de 0 à 15 
+<<<<<<< HEAD
     j=0;
     blablabla;
     while(j<i){//Vérifie une valeur avant de l'ajouter dans le tableau
         j++;
     }
     i++;
+=======
+	j=0;
+	blablabla;
+	while(j<i){//Vérifie une valeur avant de l'ajouter dans le tableau
+		j++;
+	}
+	i++;
+>>>>>>> 5b4f8adc0c7ed2fb2f149d01b94fca99cc4a3923
 };*/
        
     //console.log("Arr = " + arr);

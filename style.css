@@ -47,12 +47,17 @@ ul{
     list-style-type: none; 
 }
 .occuped{
-    background-color: dimgray;
+    background-color: gray;
 }
 .avatar{
     padding-top: 10px;
     max-height: 200px;
 }
-.blue{
-    background-color: aqua;
+.possible{
+    background-color: palegoldenrod;
+}
+
+#stopP1, #stopP2{
+    display: block;
+    margin: 0 auto;;
 }

@@ -48,14 +48,6 @@ class Perso {
         this.classe = classe;
         this.defense = defense;
     }
-    //Méthode de récupération d'arme
-    /*weapon(nom, degats){
-        if(this.position == Arme.position)
-        this.arme = Arme.nom;
-        this.degats += Arme.degats;
-        console.log("Arme récupérée");
-        //Attention, où rajouter les dégâts de l'arme à ceux du perso???
-    }*/
     //Méthode d'attaque
     attaque(attaquant, cible){//Ajouter une vérification de la santé de l'adversaire
         if(attaquant.hp > 0 && cible.hp > 0){
@@ -66,40 +58,6 @@ class Perso {
 
     //Méthode de déplacement n'utilisant pas de paramètre 
     move(){
-       function removeBlue(){
-            $('td').removeClass("blue");
-        };
-    
-    function addBlue(position){
-            $('td').eq(position).addClass("blue");
-        };
-        
-        function possible(perso){
-            if ((!$('td').eq(perso.position + 1).hasClass("occuped")) && 
-                (arrayRight.indexOf(perso.position) == -1) &&
-                (!$('td').eq(perso.position - 1).hasClass("occuped")) &&
-                (arrayLeft.indexOf(perso.position) == -1) &&
-                (!$('td').eq(perso.position - 10).hasClass("occuped")) && 
-                (arrayUp.indexOf(perso.position) == -1) &&
-                (!$('td').eq(perso.position + 10).hasClass("occuped")) && 
-                (arrayDown.indexOf(perso.position) == -1)
-               ){
-                addBlue(perso.position +10);
-                addBlue(perso.position +20);
-                addBlue(perso.position +30);
-                addBlue(perso.position -10);
-                addBlue(perso.position -20);
-                addBlue(perso.position -30);
-                addBlue(perso.position +1);
-                addBlue(perso.position +2);
-                addBlue(perso.position +3);
-                addBlue(perso.position -1);
-                addBlue(perso.position -2);
-                addBlue(perso.position -3);
-            }
-            console.log("Possible");
-                
-        };
         /*function moveUp(value){
             remove(Perso.position, Perso.classe);//Retire l'image avec la fonction remove()
                 Perso.position += value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
@@ -116,7 +74,11 @@ class Perso {
             case 39 : //Droite
                 //moveUp(1);
                 //Vérifications avant déplacement : si la future case n'est pas grisée, et si on n'est pas sur une bordure
-                if ((!$('td').eq(this.position + 1).hasClass("occuped")) && (arrayRight.indexOf(this.position) == -1)){
+                if ((!$('td').eq(this.position + 1).hasClass("occuped")) && 
+                    (arrayRight.indexOf(this.position) == -1) &&
+                    (!$('td').eq(this.position + 1).hasClass(".P1")) &&
+                    (!$('td').eq(this.position + 1).hasClass(".P2"))
+                   ){
                     remove(this.position, this.classe);//Retire l'image avec la fonction remove()
                     this.position += 1;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
                     addImage(this.position, this.avatar, this.classe);// Devrait théoriquement ajouter, via la fonction addImage2(), le CSS.//Met à jour le tableau des positions. Ne fonctionne pas correctement ici. 
@@ -127,7 +89,11 @@ class Perso {
                 break;
             case 37 ://Gauche
                 //moveDown(1);
-                if ((!$('td').eq(this.position - 1).hasClass("occuped")) && (arrayLeft.indexOf(this.position) == -1)){
+                if ((!$('td').eq(this.position - 1).hasClass("occuped")) && 
+                    (arrayLeft.indexOf(this.position) == -1) &&
+                    (!$('td').eq(this.position + 1).hasClass(".P1")) &&
+                    (!$('td').eq(this.position + 1).hasClass(".P2"))
+                   ){
                     remove(this.position, this.classe);
                     this.position -= 1;
                     addImage(this.position, this.avatar, this.classe);
@@ -138,7 +104,11 @@ class Perso {
             break;
             case 38 ://Haut
                 //moveDown(10);
-                if ((!$('td').eq(this.position - 10).hasClass("occuped")) && (arrayUp.indexOf(this.position) == -1)){
+                if ((!$('td').eq(this.position - 10).hasClass("occuped")) && 
+                    (arrayUp.indexOf(this.position) == -1) &&
+                    (!$('td').eq(this.position + 1).hasClass(".P1")) &&
+                    (!$('td').eq(this.position + 1).hasClass(".P2"))
+                   ){
                     remove(this.position, this.classe);
                     this.position -= 10;
                     addImage(this.position, this.avatar, this.classe);
@@ -149,7 +119,11 @@ class Perso {
             break;
             case 40 ://Bas
                 //moveUp(10);
-                if ((!$('td').eq(this.position + 10).hasClass("occuped")) && (arrayDown.indexOf(this.position) == -1)){
+                if ((!$('td').eq(this.position + 10).hasClass("occuped")) && 
+                    (arrayDown.indexOf(this.position) == -1) &&
+                    (!$('td').eq(this.position + 1).hasClass(".P1")) &&
+                    (!$('td').eq(this.position + 1).hasClass(".P2"))
+                ){
                     remove(this.position, this.classe);
                     this.position += 10;
                     addImage(this.position, this.avatar, this.classe);
@@ -286,7 +260,7 @@ function refreshP2(){
 perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", 50);
 perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", arrayPos[1], "P2", 50);
 //Création des armes
-w1 = new Arme("Epée", 20, "images/epeeSmall.jpg" , arrayPos[2], "W1");
+w1 = new Arme("Epée", 20, "images/epeeSmall2.jpg" , arrayPos[2], "W1");
 w2 = new Arme("Hache", 30, "images/hacheSmall.jpg" , arrayPos[3], "W2");
 w3 = new Arme("Lance", 25, "images/lanceSmall.jpg" , arrayPos[4], "W3");
 w4 = new Arme("Fléau", 25, "images/fleauSmall.jpg" , arrayPos[5], "W4");
@@ -305,6 +279,7 @@ p1.addEventListener("submit", function(e){
     $('#form1').hide();
     e.preventDefault();
 });
+    
    
 //Joueur2
 p2.addEventListener("submit", function(e){
@@ -447,61 +422,79 @@ while(i<14){ //Toutes les valeurs de 0 à 15
             addImage(arr[arrIndex], perso2.avatar, perso2.classe);
         };
     };
-    refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2 
+    refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
+    possible(perso1.position);
 });//Ne pas retirer, fin de la fonction de création du plateau
     
 //**************************************ESSAI DE  DEPLACEMENT + INDICATION DE CASES POSSIBLES***********************************
 //Récupération de l'appui sur les boutons de fin de tour de chaque perso
 function possible(position){
     $('td').removeClass("possible");
+    console.log("Possible");
     //Ajout d'une vérification des cases suivantes pour bloquer la fonction si une case grise se trouve sur le chemin
-    if(arrayDown.indexOf(position) == -1){
+    if((arrayDown.indexOf(position) == -1) &&
+         (moves < 3) 
+      ){
         checkNext(position +10);
         if (!$('td').eq(position +10).hasClass("occuped")&&
-            (arrayDown.indexOf(position+10) == -1)
+            (arrayDown.indexOf(position+10) == -1) &&
+            (moves < 2)
         ){
             checkNext(position +20);
             if (!$('td').eq(position +20).hasClass("occuped")&&
-                (arrayDown.indexOf(position +20) == -1)
+                (arrayDown.indexOf(position +20) == -1) &&
+                (moves < 1)
             ){
                 checkNext(position +30);
             };
         };
     };
-    if (arrayUp.indexOf(position) == -1){
+    if ((arrayUp.indexOf(position) == -1) &&
+         (moves < 3)
+       ){
         checkNext(position -10);
         if (!$('td').eq(position -10).hasClass("occuped")&&
-            (arrayUp.indexOf(position -10) == -1)
+            (arrayUp.indexOf(position -10) == -1)&&
+            (moves < 2)
         ){
             checkNext(position -20);
             if (!$('td').eq(position -20).hasClass("occuped")&&
-                (arrayUp.indexOf(position -20) == -1)
+                (arrayUp.indexOf(position -20) == -1) &&
+                (moves < 1)
             ){
                 checkNext(position -30);
             };
         };
     };
-    if (arrayRight.indexOf(position) == -1){
+    if ((arrayRight.indexOf(position) == -1) &&
+         (moves < 3)   
+    ){
         checkNext(position +1);
         if (!$('td').eq(position +1).hasClass("occuped")&&
-            (arrayRight.indexOf(position +1) == -1)
+            (arrayRight.indexOf(position +1) == -1)&&
+            (moves < 2)
         ){
             checkNext(position +2);
             if (!$('td').eq(position +2).hasClass("occuped")&&
-                (arrayRight.indexOf(position +2) == -1)
+                (arrayRight.indexOf(position +2) == -1) &&
+                (moves < 1)
             ){
                 checkNext(position +3);
             };
         };
     };
-    if (arrayLeft.indexOf(position) == -1){
+    if ((arrayLeft.indexOf(position) == -1) &&
+         (moves < 3)
+       ){
         checkNext(position -1);
         if (!$('td').eq(position -1).hasClass("occuped")&&
-            (arrayLeft.indexOf(position -1) == -1)
+            (arrayLeft.indexOf(position -1) == -1)&&
+            (moves < 2)
         ){
             checkNext(position -2);
             if (!$('td').eq(position -2).hasClass("occuped")&&
-                (arrayLeft.indexOf(position -2) == -1)
+                (arrayLeft.indexOf(position -2) == -1) &&
+                (moves < 1)
             ){
                 checkNext(position -3);
             };
@@ -521,16 +514,16 @@ function checkPoss(){
        perso2.position == perso1.position +10 ||
        perso2.position == perso1.position -1 ||
        perso2.position == perso1.position +10 
-       /*perso1.position == perso2.position -10 ||
-       perso1.position == perso2.position +10 ||
-       perso1.position == perso2.position -1 ||
-       perso1.position == perso2.position +10*/
       ){
         $('.fightButtonsP1').show();
         $('.fightButtonsP2').show();
     };
     console.log("check PosP1");
 };
+
+//Gestion des clics sur les boutons de fin de tour
+
+
     
 //Fonction de déplacement provisoire, il faut encore ajouter la prise en compte du nombre de cases.
 
@@ -538,34 +531,38 @@ if (perso1.hp > 0 && perso2.hp > 0){
     $(document).keydown(function(e){
         dir = e.which;
         if (tour%2 == 0){
+            possible(perso1.position);
             if( moves < 4){
                 $('.stopP1, .stopP2').empty();
-                $('.stopP1').append($('<br/><input type="submit" value="Fin du tour" id="stopP1" action="#">'));
+                $('.stopP1').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP1" action="#">'));
                 perso1.move();
-                $('#stopP1').click(function(e){
-                    moves = 3;
-                    tour++;
-                    console.log("Click StopP1");
-                    return moves;
-                });
                 checkPoss();
                 possible(perso1.position);
-                console.log("Moves P1 = " + moves);
+                $('#buttonStopP1').click(function(e){
+                    moves = 0;
+                    tour++;
+                    $('.stopP1, .stopP2').empty();
+                    possible(perso2.position);
+                    return moves;
+                });
+                
             };
             //moves = 0;
         } else {
+            possible(perso2.position);
             if( moves < 4){
                 $('.stopP1, .stopP2').empty();
-                $('.stopP2').append($('<br/><input type="submit" value="Fin du tour" id="stopP2" action="#">'));
+                $('.stopP2').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP2" action="#">'));
                 perso2.move();
-                $('#stopP2').click(function(e){
-                    moves = 3;
-                    tour++;
-                    console.log("Click stopP2");
-                    return moves;
-                });
                 checkPoss();
                 possible(perso2.position);
+                $('#buttonStopP2').click(function(e){
+                    moves = 0;
+                    tour++;
+                    $('.stopP1, .stopP2').empty();
+                    possible(perso1.position);
+                    return moves;
+                });
             }
             //moves = 0;
         }
@@ -574,10 +571,16 @@ if (perso1.hp > 0 && perso2.hp > 0){
         if(moves == 3){
             tour ++;
             moves = 0;
+            if (tour%2 == 0){
+                possible(perso1.position);
+                $('.stopP2').empty();
+            } else {
+                possible(perso2.position);
+                $('.stopP1').empty();
+            }
         };
         
     });
 };
-
-
+    
 });//Ne pas retirer, fin de la fonction de chargement du DOM

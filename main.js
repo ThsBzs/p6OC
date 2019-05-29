@@ -261,7 +261,7 @@ occupe = new Occuped("images/grisSmall.jpg", "occuped");
 
    
 
-//************************ AJOUT DES CARACTERISTIQUES DES PERSONNAGES EN HTML*****************************
+//************************ AJOUT DES NOMS DES PERSONNAGES EN HTML*****************************
 //Joueur1
 $('#form1').submit(function(e){
 	let saisie1 = form1.elements.nom1;

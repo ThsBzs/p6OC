@@ -175,7 +175,6 @@ class Arme {
         this.classe = classe;
     }
 };
-
     
 //Création d'une classe de bloc occupé
 class Occuped{
@@ -448,53 +447,70 @@ while(i<14){ //Toutes les valeurs de 0 à 15
             addImage(arr[arrIndex], perso2.avatar, perso2.classe);
         };
     };
-    refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
-    
-    
-    
-    //Récupération de l'appui sur les boutons de fin de tour de chaque perso
-$('#stopP1').click(function(e){
-    moves = 3;
-    tour++;
-    console.log("Click StopP1");
-    return moves;
-});
-    
-$('#stopP2').click(function(e){
-    moves = 3;
-    tour++;
-    console.log("Click stopP2");
-    return moves;
-});
+    refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2 
 });//Ne pas retirer, fin de la fonction de création du plateau
-
-
     
 //**************************************ESSAI DE  DEPLACEMENT + INDICATION DE CASES POSSIBLES***********************************
-    
-        
+//Récupération de l'appui sur les boutons de fin de tour de chaque perso
 function possible(position){
     $('td').removeClass("possible");
-    checkNext(position +10);
-    checkNext(position +20);
-    checkNext(position +30);
-    checkNext(position -10);
-    checkNext(position -20);
-    checkNext(position -30);
-    checkNext(position +1);
-    checkNext(position +2);
-    checkNext(position +3);
-    checkNext(position -1);
-    checkNext(position -2);
-    checkNext(position -3);
+    //Ajout d'une vérification des cases suivantes pour bloquer la fonction si une case grise se trouve sur le chemin
+    if(arrayDown.indexOf(position) == -1){
+        checkNext(position +10);
+        if (!$('td').eq(position +10).hasClass("occuped")&&
+            (arrayDown.indexOf(position+10) == -1)
+        ){
+            checkNext(position +20);
+            if (!$('td').eq(position +20).hasClass("occuped")&&
+                (arrayDown.indexOf(position +20) == -1)
+            ){
+                checkNext(position +30);
+            };
+        };
+    };
+    if (arrayUp.indexOf(position) == -1){
+        checkNext(position -10);
+        if (!$('td').eq(position -10).hasClass("occuped")&&
+            (arrayUp.indexOf(position -10) == -1)
+        ){
+            checkNext(position -20);
+            if (!$('td').eq(position -20).hasClass("occuped")&&
+                (arrayUp.indexOf(position -20) == -1)
+            ){
+                checkNext(position -30);
+            };
+        };
+    };
+    if (arrayRight.indexOf(position) == -1){
+        checkNext(position +1);
+        if (!$('td').eq(position +1).hasClass("occuped")&&
+            (arrayRight.indexOf(position +1) == -1)
+        ){
+            checkNext(position +2);
+            if (!$('td').eq(position +2).hasClass("occuped")&&
+                (arrayRight.indexOf(position +2) == -1)
+            ){
+                checkNext(position +3);
+            };
+        };
+    };
+    if (arrayLeft.indexOf(position) == -1){
+        checkNext(position -1);
+        if (!$('td').eq(position -1).hasClass("occuped")&&
+            (arrayLeft.indexOf(position -1) == -1)
+        ){
+            checkNext(position -2);
+            if (!$('td').eq(position -2).hasClass("occuped")&&
+                (arrayLeft.indexOf(position -2) == -1)
+            ){
+                checkNext(position -3);
+            };
+        };
+    };
 };
     
 function checkNext(position){
-    if((arrayRight.indexOf(position) == -1) &&
-        (arrayLeft.indexOf(position) == -1) &&
-        (arrayUp.indexOf(position) == -1) &&
-        (arrayDown.indexOf(position) == -1) &&
-        (!$('td').eq(position).hasClass("occuped"))){
+    if((!$('td').eq(position).hasClass("occuped"))){
         $('td').eq(position).addClass("possible");
     };
 };
@@ -526,6 +542,12 @@ if (perso1.hp > 0 && perso2.hp > 0){
                 $('.stopP1, .stopP2').empty();
                 $('.stopP1').append($('<br/><input type="submit" value="Fin du tour" id="stopP1" action="#">'));
                 perso1.move();
+                $('#stopP1').click(function(e){
+                    moves = 3;
+                    tour++;
+                    console.log("Click StopP1");
+                    return moves;
+                });
                 checkPoss();
                 possible(perso1.position);
                 console.log("Moves P1 = " + moves);
@@ -536,6 +558,12 @@ if (perso1.hp > 0 && perso2.hp > 0){
                 $('.stopP1, .stopP2').empty();
                 $('.stopP2').append($('<br/><input type="submit" value="Fin du tour" id="stopP2" action="#">'));
                 perso2.move();
+                $('#stopP2').click(function(e){
+                    moves = 3;
+                    tour++;
+                    console.log("Click stopP2");
+                    return moves;
+                });
                 checkPoss();
                 possible(perso2.position);
             }
@@ -551,63 +579,5 @@ if (perso1.hp > 0 && perso2.hp > 0){
     });
 };
 
-/*if (perso1.hp > 0 && perso2.hp > 0){
-    $(document).keydown(function(e){
-        dir = e.which;
-        switch (tour){
-            case(tour%2 == 0):
-                while(moves < 3){
-                    $('#stopP2').hide();
-                    $('#stopP1').show();
-                    perso1.move();
-                    possible(perso1.position);
-                    //moves ++;
-                };
-                moves = 0;
-            break;
-            case(tour%2 == 1):
-                while(moves < 3);{
-                    $('#stopP2').show();
-                    $('#stopP1').hide();
-                    perso2.move();
-                    possible(perso2.position);
-                    //moves ++;
-                };
-                moves = 0;
-            break;
-            default:
-                tour ++;
-            };
-    });
-};*/
 
-//déplacement provisoire de la partie déplacements dans le plateau. Il faudra trouver un moyen de la sortir de là.
-    //LE problème vient de la récupération des positions, cette version ne fonctionne pas hors du plateau.
-  /*  if (perso1.hp > 0 && perso2.hp > 0){
-    if (tour%2 == 0){
-        possible(perso1.position);
-        $(document).keydown(function(e){
-           dir = e.which;
-           $('#stopP2').hide();
-           $('#stopP1').show();
-           perso1.move();
-           tour ++;
-           console.log("Tour n° " + tour);
-       });
-    } else if (tour%2 == 1) {
-        possible(perso2.position);
-        $(document).keydown(function(e){
-            dir = e.which;
-            $('#stopP2').show();
-            $('#stopP1').hide();
-            perso2.move();
-            tour ++;
-            console.log("Tour n° " + tour);
-        });
-    };
-};*/
-
-
-
- 
 });//Ne pas retirer, fin de la fonction de chargement du DOM

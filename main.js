@@ -49,15 +49,20 @@ class Perso {
 
     //Méthode de déplacement n'utilisant pas de paramètre 
     move(){
+    	//Préparation des fonctions up et down
+    	/*let droite  = +1;
+    	let gauche = -1;
+    	let haut = -10;
+    	let bas = +10;*/ 
         /*function moveUp(value){
             remove(Perso.position, Perso.classe);//Retire l'image avec la fonction remove()
-                Perso.position += value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
+                Perso.position = Perso.position + value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
                 addImage(Perso.position, Perso.avatar, Perso.classe);// Devrait théoriquement ajouter, via la fonction addImage2(), le CSS.//Met à jour le tableau des positions. Ne fonctionne pas correctement ici. 
                 refreshPos();
         };
         function moveDown(value){
             remove(Perso.position, Perso.classe);//Retire l'image avec la fonction remove()
-                Perso.position -= value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
+                Perso.position = Perso.position + value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
                 addImage(Perso.position, Perso.avatar, Perso.classe);// Devrait théoriquement ajouter, via la fonction addImage2(), le CSS.//Met à jour le tableau des positions. Ne fonctionne pas correctement ici. 
                 refreshPos();
         };*/
@@ -284,7 +289,7 @@ $('#form2').submit(function(e){
 //************************GENERATION DU PLATEAU***********************************
 //Action au clic sur "Lancer !"
 $('#place').click(function(e){ 
-//Désactivation du bouton, NE PAS RETIRER, il reste visible le temps du développement
+//NE PAS RETIRER, Désactivation du bouton, il reste visible le temps du développement
     //$('#place').hide();
 //Avant tout, suppression du contenu s'il existait déjà pour repartir sur un plateau neuf
     $("td, tr, table").remove();
@@ -304,7 +309,6 @@ $('#place').click(function(e){
     });
    
 //Lancement du positionnement de tous les éléments (cases occupées, armes et persos)
-//$("td").css({'background-color': 'white', "background-image": "none"}).removeClass("occuped").addClass("free");//On remet tout en blanc avant de relancer A CONSERVER, servira à réinitialiser le plateau
     let free = document.querySelectorAll(".free");//Renvoie un array de toutes les cases .free
     function melt (){
         aGriser = (Math.floor(Math.random()*free.length));//Renvoie une valeur au hasard dans ce tableau  

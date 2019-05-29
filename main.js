@@ -1,8 +1,5 @@
 $(function(){//Attente du chargement complet du DOM avant modification
 //******************DECLARATION DES VARIABLES*******************************
-//Récupération des noms saisis par le(s) joueur(s)
-const p1 = document.querySelector("#form1");  
-const p2 = document.querySelector("#form2")
 //Préparation des persos et armes
 let perso1,
     perso2,
@@ -25,13 +22,7 @@ let perso1,
     tour = 0,//Permet de choisir le joueur dont c'est le tour
     moves = 0,
     //arrayPos = [0, 1, 2, 3, 4, 5],//Tableau des positions des éléments déplaçables - SUPPRIMABLE SI REFRESHPOS RESTE EN objet.position
-    dir;//Sera utilisée dans la méthode pour définir la touche pressée
-/*  posP1,//positions
-    posP2,
-    posW1,
-    posW2,
-    posW3,
-    posW4;*/
+    dir;
 
 //*****************DECLARATION DES OBJETS, CLASSES ET METHODES******************
 //Création d'une classe personnage
@@ -272,17 +263,16 @@ occupe = new Occuped("images/grisSmall.jpg", "occuped");
 
 //************************ AJOUT DES CARACTERISTIQUES DES PERSONNAGES EN HTML*****************************
 //Joueur1
-p1.addEventListener("submit", function(e){
-    let saisie1 = form1.elements.nom1;
+$('#form1').submit(function(e){
+	let saisie1 = form1.elements.nom1;
     $('<h3>Nom : ' + saisie1.value + '</h3>').insertAfter('#img1');
     refreshP1();
     $('#form1').hide();
     e.preventDefault();
 });
-    
-   
+
 //Joueur2
-p2.addEventListener("submit", function(e){
+$('#form2').submit(function(e){
     let saisie2 = form2.elements.nom2;
     $('<h3>Nom : ' + saisie2.value + '</h3>').insertAfter('#img2');
     refreshP2();
@@ -429,14 +419,13 @@ while(i<14){ //Toutes les valeurs de 0 à 15
 //**************************************ESSAI DE  DEPLACEMENT + INDICATION DE CASES POSSIBLES***********************************
 //Récupération de l'appui sur les boutons de fin de tour de chaque perso
 function possible(position){
-    $('td').removeClass("possible");
-    console.log("Possible");
+    $('td').removeClass("possible");//On retire toutes les cases colorées
     //Ajout d'une vérification des cases suivantes pour bloquer la fonction si une case grise se trouve sur le chemin
-    if((arrayDown.indexOf(position) == -1) &&
-         (moves < 3) 
+    if((arrayDown.indexOf(position) == -1) &&//Si la position du joueur n'est pas une bordure basse
+         (moves < 3)//Et si les mouvements sont à 0
       ){
-        checkNext(position +10);
-        if (!$('td').eq(position +10).hasClass("occuped")&&
+        checkNext(position +10);//On envoie sur la case suivante vers le bas la classe possible.
+        if (!$('td').eq(position +10).hasClass("occuped")&&//Même opération avec les cases suivantes, en modifiant les valeurs
             (arrayDown.indexOf(position+10) == -1) &&
             (moves < 2)
         ){
@@ -508,12 +497,12 @@ function checkNext(position){
     };
 };
 
-//Essai de fonction pour l'affichage des boutons d'attaque/défense
+//Fonction pour l'affichage des boutons d'attaque/défense
 function checkPoss(){
     if(perso2.position == perso1.position -10 ||
        perso2.position == perso1.position +10 ||
        perso2.position == perso1.position -1 ||
-       perso2.position == perso1.position +10 
+       perso2.position == perso1.position +1 
       ){
         $('.fightButtonsP1').show();
         $('.fightButtonsP2').show();
@@ -521,12 +510,7 @@ function checkPoss(){
     console.log("check PosP1");
 };
 
-//Gestion des clics sur les boutons de fin de tour
-
-
-    
-//Fonction de déplacement provisoire, il faut encore ajouter la prise en compte du nombre de cases.
-
+//Fonction de déplacement
 if (perso1.hp > 0 && perso2.hp > 0){
     $(document).keydown(function(e){
         dir = e.which;

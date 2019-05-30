@@ -61,3 +61,24 @@ ul{
     display: block;
     margin: 0 auto;;
 }
+/*Ajout des classes pour lacher les armes*/
+.W1{
+    background-image: url(images/epeeSmall2.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.W2{
+    background-image: url(images/hacheSmall.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.W3{
+    background-image: url(images/lanceSmall.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.W4{
+    background-image: url(images/fleauSmall.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+}

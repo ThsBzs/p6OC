@@ -28,7 +28,7 @@ let perso1,
 //Création d'une classe personnage
 class Perso {
     //Constructeur
-    constructor(nom, hp, degats, arme, score, avatar, position, classe, defense){
+    constructor(nom, hp, degats, arme, score, avatar, position, classe, defense, hasWeapon, weaponClass, shield){
         this.nom = nom;
         this.hp = hp;
         this.degats = degats;
@@ -38,27 +38,51 @@ class Perso {
         this.position = position;
         this.classe = classe;
         this.defense = defense;
+        this.hasWeapon = hasWeapon;
+        this.weaponClass = weaponClass;
+        this.shield = shield;
     }
     //Méthode d'attaque
-    attaque(attaquant, cible){//Ajouter une vérification de la santé de l'adversaire
+    attaque(attaquant, cible){
+        //Si les persos ont encore de la vie
         if(attaquant.hp > 0 && cible.hp > 0){
-            let degatsMax = perso.degats + Arme.degats;
-            cible.hp = cible.hp - (attaquant.degatsMax - cible.defense);
+            //Si le bouclier n'est pas utilisé, dégâts 100%
+            if (cible.shield = false) {
+                cible.hp -= attaquant.degats;
+            //Si le bouclier est uitilisé, on divise les dégâts reçus par 2
+            } else if (cible.shield = true){
+                cible.hp -= (attaquant.degats / 2); 
+            };
+            //On rafraîchit P1 et P2 
+            refreshP1();
+            refreshP2();
         };
     };
-
+    
+    //Méthode de récupération d'arme
+    
     //Méthode de déplacement n'utilisant pas de paramètre 
     move(perso){
+        //Fonction pour l'affichage des boutons d'attaque/défense
+        function checkFight(){
+            if (perso2.position == perso1.position -10 ||
+                perso2.position == perso1.position +10 ||
+                perso2.position == perso1.position -1 ||
+                perso2.position == perso1.position +1 
+            ){
+                $('.fightButtonsP1').show();
+                $('.fightButtonsP2').show();
+            };
+        };
     	//Préparation des fonctions up et down
     	let droite  = +1;
     	let gauche = -1;
     	let haut = -10;
     	let bas = +10; 
         function movePlayer(value){
-            console.log("This.position = " + perso.position);
             if ((!$('td').eq(perso.position + value).hasClass("occuped")) && 
-                    (!$('td').eq(perso.position + value).hasClass(".P1")) &&
-                    (!$('td').eq(perso.position + value).hasClass(".P2"))
+                    (!$('td').eq(perso.position + value).hasClass("P1")) &&
+                    (!$('td').eq(perso.position + value).hasClass("P2")) 
                 ){
                     remove(perso.position, perso.classe);//Retire l'image avec la fonction remove()
                     perso.position = perso.position + value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
@@ -162,31 +186,30 @@ function refreshPos(){
     return arrayPos;//ArrayPos est le tableau des positions, permet de travailler ensuite sur toutes les positions
 };   
 //Fonction de récupération d'arme
-function checkPos(player){
-    if(player.position == w1.position){
+function addWeapon(player, weapon, classe){
+    if(player.position == weapon.position){
+        //On vérifie si le joueur avait une arme. Si oui, on dépose l'ancienne sur le plateau.
+        if(player.hasWeapon = true){
+            $('td').eq(player.position).addClass(player.weaponClass).removeClass(free);
+        };
         //On réinitialise les dégâts de base
         player.degats = 10;
         //On ajoute les infos de l'arme au perso
-        player.arme = w1.nom;
-        player.degats += w1.degats;
+        player.arme = weapon.nom;
+        player.degats += weapon.degats;
+        player.weaponClass = classe;
         //On retire l'arme de la case 
-        $('td').eq(w1.position).removeClass("W1");
-    } else if (player.position == w2.position){
-        player.degats = 10;
-        player.arme = w2.nom;
-        player.degats += w2.degats;
-        $('td').eq(w2.position).removeClass("W2");
-    } else if (player.position == w3.position){
-        player.degats = 10;
-        player.arme = w3.nom;
-        player.degats += w3.degats;
-        $('td').eq(w3.position).removeClass("W3");
-    } else if (player.position == w4.position){
-        player.degats = 10;
-        player.arme = w4.nom;
-        player.degats += w4.degats;
-        $('td').eq(w4.position).removeClass("W4");
+        $('td').eq(weapon.position).removeClass(classe);
+        //On met à jour le hasWeapon sur vrai
+        player.hasWeapon = true;
     };
+};
+    
+function checkPos(player){
+    addWeapon(player, w1, "W1");
+    addWeapon(player, w2, "W2");
+    addWeapon(player, w3, "W3");
+    addWeapon(player, w4, "W4");
     refreshP1();
     refreshP2();
 };
@@ -214,8 +237,8 @@ function refreshP2(){
     
     
 //Création des personnages
-perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", 50);
-perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", arrayPos[1], "P2", 50);
+perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", 50, false, false);
+perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", arrayPos[1], "P2", 50, false, false);
 //Création des armes
 w1 = new Arme("Epée", 20, "images/epeeSmall2.jpg" , arrayPos[2], "W1");
 w2 = new Arme("Hache", 30, "images/hacheSmall.jpg" , arrayPos[3], "W2");
@@ -275,26 +298,32 @@ $('#place').click(function(e){
         aGriser = (Math.floor(Math.random()*free.length));//Renvoie une valeur au hasard dans ce tableau  
         return aGriser;
     };
+    
+   
+    //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
+    let arr = [];
     //Fonction de vérification de 2 valeurs avant ajout dans le tableau
     //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
-    function check(value1, value2){
-	   if (!arr.includes(value1) && 
-           !arr.includes(value2) && 
-           value1 != value2 && 
-           value1 != value2 -11 && 
-           value1 != value2 -10 && 
-           value1 != value2 -9 && 
-           value1 != value2 -1 && 
-           value1 != value2 +1 && 
-           value1 != value2 +9 && 
-           value1 != value2 +10 && 
-           value1 != value2 +11){
+    
+     function check(value1, value2){
+	   if ((!arr.includes(value1)) && 
+           (!arr.includes(value2)) && 
+           (value1 != value2) && 
+           (value1 != (value2 -11)) && 
+           (value1 != (value2 -10)) && 
+           (value1 != (value2 -9)) && 
+           (value1 != (value2 -1)) && 
+           (value1 != (value2 +1)) && 
+           (value1 != (value2 +9)) && 
+           (value1 != (value2 +10)) && 
+           (value1 != (value2 +11))){
+           console.log("Value1 = " + value1);
+           console.log("Value2 = " + value2);
            arr.push(value1);
 	   };
         return arr;
     };
-    //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
-    let arr = [];
+    
     //************************MISE EN ATTENTE POUR PASSAGE EN BOUCLE SESSION MENTORAT**************************
 /*    //Ajout de 15 valeurs dans le tableau
     while(arr.length<=14){//On limite la taille du tableau 
@@ -320,10 +349,11 @@ $('#place').click(function(e){
 i = 1;
  
 while (i < 17) {
-    melt();
-    for (j = 0; j <i; j++){
-       // melt();
+    for (j = 0, j < arr.length; j <i; j++){
+        melt();
         check(aGriser, arr[j]);
+        console.log("Arr[j] = " + arr[j]);
+        
         //console.log("aGriser = " + aGriser);
         //console.log("arr = " + arr);
     };
@@ -378,11 +408,11 @@ while(i<14){ //Toutes les valeurs de 0 à 15
         };
     };
     refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
-    possible(perso1.position);
+    possible(perso1.position);//Ne pas retirer
 });//Ne pas retirer, fin de la fonction de création du plateau
     
-//**************************************ESSAI DE  DEPLACEMENT + INDICATION DE CASES POSSIBLES***********************************
-//Récupération de l'appui sur les boutons de fin de tour de chaque perso
+//**************************************DEPLACEMENT + INDICATION DE CASES POSSIBLES***********************************
+//Fonction de coloration des cases de déplacement possible
 function possible(position){
     $('td').removeClass("possible");//On retire toutes les cases colorées
     //Essai d'une fonction pour regrouper toutes les suivantes
@@ -417,18 +447,7 @@ function checkNext(position){
     };
 };
 
-//Fonction pour l'affichage des boutons d'attaque/défense
-function checkFight(){
-    if(perso2.position == perso1.position -10 ||
-       perso2.position == perso1.position +10 ||
-       perso2.position == perso1.position -1 ||
-       perso2.position == perso1.position +1 
-      ){
-        $('.fightButtonsP1').show();
-        $('.fightButtonsP2').show();
-    };
-    console.log("check PosP1");
-};
+
 
 //Fonction de déplacement
 if (perso1.hp > 0 && perso2.hp > 0){
@@ -440,7 +459,6 @@ if (perso1.hp > 0 && perso2.hp > 0){
                 $('.stopP1, .stopP2').empty();
                 $('.stopP1').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP1" action="#">'));
                 perso1.move(perso1);
-                checkFight();
                 possible(perso1.position);
                 $('#buttonStopP1').click(function(e){
                     moves = 0;
@@ -449,16 +467,13 @@ if (perso1.hp > 0 && perso2.hp > 0){
                     possible(perso2.position);
                     return moves;
                 });
-                
             };
-            //moves = 0;
         } else {
             possible(perso2.position);
             if( moves < 4){
                 $('.stopP1, .stopP2').empty();
                 $('.stopP2').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP2" action="#">'));
                 perso2.move(perso2);
-                checkFight();
                 possible(perso2.position);
                 $('#buttonStopP2').click(function(e){
                     moves = 0;
@@ -468,7 +483,6 @@ if (perso1.hp > 0 && perso2.hp > 0){
                     return moves;
                 });
             }
-            //moves = 0;
         }
         //Tant que moves n'a pas atteint 3, on ne passe pas au tour suivant. 
         //Cela permet de limiter les déplacements. Il manque encore la récupération du bouton de fin de tour
@@ -482,8 +496,7 @@ if (perso1.hp > 0 && perso2.hp > 0){
                 possible(perso2.position);
                 $('.stopP1').empty();
             }
-        };
-        
+        };  
     });
 };
     

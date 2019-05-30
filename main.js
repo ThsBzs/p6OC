@@ -28,7 +28,7 @@ let perso1,
 //Création d'une classe personnage
 class Perso {
     //Constructeur
-    constructor(nom, hp, degats, arme, score, avatar, position, classe, defense, hasWeapon, weaponClass, shield){
+    constructor(nom, hp, degats, arme, score, avatar, position, classe, defense, hasWeapon, weaponClass, weaponAvatar, hasShield){
         this.nom = nom;
         this.hp = hp;
         this.degats = degats;
@@ -40,22 +40,24 @@ class Perso {
         this.defense = defense;
         this.hasWeapon = hasWeapon;
         this.weaponClass = weaponClass;
-        this.shield = shield;
+        this.weaponAvatar = weaponAvatar;
+        this.hasShield = hasShield;
     }
     //Méthode d'attaque
     attaque(attaquant, cible){
         //Si les persos ont encore de la vie
         if(attaquant.hp > 0 && cible.hp > 0){
             //Si le bouclier n'est pas utilisé, dégâts 100%
-            if (cible.shield = false) {
+            if (cible.hasShield = false) {
                 cible.hp -= attaquant.degats;
             //Si le bouclier est uitilisé, on divise les dégâts reçus par 2
-            } else if (cible.shield = true){
+            } else if (cible.hasShield = true){
                 cible.hp -= (attaquant.degats / 2); 
             };
             //On rafraîchit P1 et P2 
             refreshP1();
             refreshP2();
+            tour ++;
         };
     };
     
@@ -70,8 +72,7 @@ class Perso {
                 perso2.position == perso1.position -1 ||
                 perso2.position == perso1.position +1 
             ){
-                $('.fightButtonsP1').show();
-                $('.fightButtonsP2').show();
+                $('#masque').fadeIn();
             };
         };
     	//Préparation des fonctions up et down
@@ -197,7 +198,8 @@ function addWeapon(player, weapon, classe){
         //On ajoute les infos de l'arme au perso
         player.arme = weapon.nom;
         player.degats += weapon.degats;
-        player.weaponClass = classe;
+        player.weaponClass = weapon.classe;
+        player.weaponAvatar = weapon.avatar;
         //On retire l'arme de la case 
         $('td').eq(weapon.position).removeClass(classe);
         //On met à jour le hasWeapon sur vrai
@@ -216,29 +218,33 @@ function checkPos(player){
 
 //Fonctions d'affichage en HTML des caractéristiques des personnages, utilisée pour mettre à jour ces infos durant le jeu
 function refreshP1(){
-        $('#setP1').empty();
-        $('.fightButtonsP1').empty();
-        $('#setP1').append($('<li>Santé : ' + perso1.hp + '</li>'))
+    $('#setP1, #setP1Box').empty();
+    $('#setP1, #setP1Box').append($('<li>Santé : ' + perso1.hp + '</li>'))
         .append($('<li>Dégâts : ' + perso1.degats + '</li>'))
             .append($('<li>Arme : ' + perso1.arme + '</li>'))
                 .append($('<li>Score : ' + perso1.score + '</li>'));
-        $('.fightButtonsP1').append($('<input type="submit" value="Attaquer !" id="attackP1" action="#"> <input type="submit" value="Défendre (-50% de dégâts reçus)" id="defendP1" action="#">')).hide();
+    if (perso1.hasWeapon = true){
+        $('#weaponP1, #weaponP1Box').empty();
+        $('#weaponP1, #weaponP1Box').append('<img src="' + perso1.weaponAvatar + '"/>');
     };
+};
     
 function refreshP2(){
-        $('#setP2').empty();
-        $('.fightButtonsP2').empty();
-        $('#setP2').append($('<li>Santé : ' + perso2.hp + '</li>'))
+    $('#setP2, #setP2Box').empty();
+    $('#setP2, #setP2Box').append($('<li>Santé : ' + perso2.hp + '</li>'))
         .append($('<li>Dégâts : ' + perso2.degats + '</li>'))
             .append($('<li>Arme : ' + perso2.arme + '</li>'))
                 .append($('<li>Score : ' + perso2.score + '</li>'));
-        $('.fightButtonsP2').append($('<input type="submit" value="Attaquer !" id="attackP2" action="#"> <input type="submit" value="Défendre (-50% de dégâts reçus)" id="defendP2" action="#">')).hide();
+    if (perso2.hasWeapon = true){
+        $('#weaponP2, #weaponP2Box').empty();
+        $('#weaponP2, #weaponP2Box').append('<img src="' + perso2.weaponAvatar + '"/>');
     };
+};
     
     
 //Création des personnages
-perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", 50, false, false);
-perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", arrayPos[1], "P2", 50, false, false);
+perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", 50, false, "", "", false);
+perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.jpg", arrayPos[1], "P2", 50, false, "", "", false);
 //Création des armes
 w1 = new Arme("Epée", 20, "images/epeeSmall2.jpg" , arrayPos[2], "W1");
 w2 = new Arme("Hache", 30, "images/hacheSmall.jpg" , arrayPos[3], "W2");
@@ -255,6 +261,7 @@ occupe = new Occuped("images/grisSmall.jpg", "occuped");
 $('#form1').submit(function(e){
 	let saisie1 = form1.elements.nom1;
     $('<h3>Nom : ' + saisie1.value + '</h3>').insertAfter('#img1');
+    $('<h3>Nom : ' + saisie1.value + '</h3>').insertAfter('#img1Box');
     refreshP1();
     $('#form1').hide();
     e.preventDefault();
@@ -264,6 +271,7 @@ $('#form1').submit(function(e){
 $('#form2').submit(function(e){
     let saisie2 = form2.elements.nom2;
     $('<h3>Nom : ' + saisie2.value + '</h3>').insertAfter('#img2');
+    $('<h3>Nom : ' + saisie2.value + '</h3>').insertAfter('#img2Box');
     refreshP2();
     $('#form2').hide();
     e.preventDefault();
@@ -317,8 +325,8 @@ $('#place').click(function(e){
            (value1 != (value2 +9)) && 
            (value1 != (value2 +10)) && 
            (value1 != (value2 +11))){
-           console.log("Value1 = " + value1);
-           console.log("Value2 = " + value2);
+           //console.log("Value1 = " + value1);
+           //console.log("Value2 = " + value2);
            arr.push(value1);
 	   };
         return arr;
@@ -352,7 +360,7 @@ while (i < 17) {
     for (j = 0, j < arr.length; j <i; j++){
         melt();
         check(aGriser, arr[j]);
-        console.log("Arr[j] = " + arr[j]);
+        //console.log("Arr[j] = " + arr[j]);
         
         //console.log("aGriser = " + aGriser);
         //console.log("arr = " + arr);
@@ -485,7 +493,7 @@ if (perso1.hp > 0 && perso2.hp > 0){
             }
         }
         //Tant que moves n'a pas atteint 3, on ne passe pas au tour suivant. 
-        //Cela permet de limiter les déplacements. Il manque encore la récupération du bouton de fin de tour
+        //Cela permet de limiter les déplacements.
         if(moves == 3){
             tour ++;
             moves = 0;
@@ -498,6 +506,61 @@ if (perso1.hp > 0 && perso2.hp > 0){
             }
         };  
     });
-};
+    //*****************************************GESTION DES COMBATS -- PAS ENCORE AU POINT**********************************
+// Laisser le premier coup à l'attaquant
+    if(tour%2 == 0){
+        //Désactivation du bouclier
+        perso1.hasShield = false;
+        //Ecoute du clic sur "attaquer"
+        $('#attackP1').click(function(e){
+            perso1.attaque(perso1, perso2);
+            //return tour;
+            console.log("Tour = " + tour);
+            e.preventDefault();
+        });
+        $('#defendP1').click(function(e){
+            perso1.hasShield = true;
+            tour ++;
+            /*e.preventDefault();*/
+        });   
+    } else {
+        //Désactivation du bouclier
+        perso2.hasShield = false;
+        //Ecoute du clic sur "attaquer"
+        $('#attackP2').click(function(e){
+            
+            perso2.attaque(perso2, perso1);
+            tour ++;
+            /*return tour;
+            e.preventDefault();*/
+        });
+        $('#defendP2').click(function(e){
+            perso2.hasShield = true;
+            tour ++;
+            /*e.preventDefault();*/
+        });
+    };
+    //********************************GESTION DE LA VICTOIRE -- PAS ENCORE AU POINT*************************************************
+} else {
+    if(perso1.hp <=0){
+        $('#fightBox').empty();
+        $('#fightBox').append('<h1>Victoire du joueur 2 ! </h1>');
+        alert("Victoire du joueur 2 !");
+        perso2.score ++;
+        refreshP1();
+        refreshP2();
+    } else if (perso2.hp <= 0){
+        $('#fightBox').empty();
+        $('#fightBox').append('<h1>Victoire du joueur 1 ! </h1>');
+        alert("Victoire du joueur 1 !");
+        perso1.score ++;
+        refreshP1();
+        refreshP2();
+    };
+};//Fin de if perso = en vie
+    
+
+    
+
     
 });//Ne pas retirer, fin de la fonction de chargement du DOM

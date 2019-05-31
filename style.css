@@ -13,11 +13,17 @@ body{
     display: none;
 }
 
-#fightBox{
+#fight-container{
     background-color: white;
     margin: 100px ;
     text-align: center;
     padding: 20px;
+}
+#fightBox{
+    background-color: white;
+    margin: 100px, 20px ;
+    text-align: center;
+    padding: 20px 20px;;
 }
 .separator{
     width: 15px;
@@ -28,7 +34,7 @@ body{
     flex-direction: column;
 }
 
-#attackP1, #attackP2, #defendP1, #defendP2{
+.attackP1, .attackP2, .defendP1, .defendP2{
     margin-bottom: 10px
 }
 #game{
@@ -97,22 +103,22 @@ ul{
 }
 /*Ajout des classes pour lacher les armes*/
 .W1{
-    background-image: url(images/epeeSmall2.jpg);
+    background-image: url(images/epeeSmall.png);
     background-repeat: no-repeat;
     background-position: center center;
 }
 .W2{
-    background-image: url(images/hacheSmall.jpg);
+    background-image: url(images/hacheSmall.png);
     background-repeat: no-repeat;
     background-position: center center;
 }
 .W3{
-    background-image: url(images/lanceSmall.jpg);
+    background-image: url(images/lanceSmall.png);
     background-repeat: no-repeat;
     background-position: center center;
 }
 .W4{
-    background-image: url(images/fleauSmall.jpg);
+    background-image: url(images/fleauSmall.png);
     background-repeat: no-repeat;
     background-position: center center;
 }

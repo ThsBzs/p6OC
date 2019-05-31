@@ -9,8 +9,11 @@
 <body>
     <!--Fenêtre de combat masquée si elle n'est pas utilisée-->
     <div id="masque">
+        <div id = "fight-container">
         <div id="fightBox">
-            <h2>Il est temps de se battre !</h2>
+            <h2 class = "title">Il est temps de se battre !</h2>
+            <p id="explain">A chaque tour, vous pouvez attaquer ou défendre. Si vous choisissez d'attaquer, vous infligerez autant de dégâts qu'indiqué. Si vous défendez, le prochain coup reçu ne vous infligera que la moitié des dégâts indiqués. Le joueur à l'origine du combat commence. Bonne chance !</p>
+            <input type="submit" value="On y va !" id="showFightRing" action="#">
             <div id="fightRing">
                 <!--Partie de gauche de la fenêtre de combat-->
                 <div id="left">
@@ -25,7 +28,8 @@
                     </div>
                     <!--Ajout des boutons de combat-->
                     <div class="fightButtonsP1">
-                        <input type="submit" value="Attaquer !" id="attackP1" action="#"> <input type="submit" value="Défendre (-50% de dégâts reçus)" id="defendP1" action="#">
+                        <input type="submit" value="Attaquer !" class="attackP1" action="#"> 
+                        <input type="submit" value="Défendre (-50% de dégâts reçus)" class="defendP1" action="#">
                     </div> 
                 </div>
                 <div class="separator"></div>
@@ -42,10 +46,22 @@
                     </div>
                     <!--Ajout des boutons de combat-->
                     <div class="fightButtonsP2">
-                        <input type="submit" value="Attaquer !" id="attackP2" action="#"> <input type="submit" value="Défendre (-50% de dégâts reçus)" id="defendP2" action="#">
+                        <input type="submit" value="Attaquer !" class="attackP2" action="#"> 
+                        <input type="submit" value="Défendre (-50% de dégâts reçus)" class="defendP2" action="#">
                     </div>
                 </div> 
             </div>
+            <!--Elements affichés en cas de victoire-->
+            <div class="victoryP1">
+                <h1>Victoire du joueur 1 ! </h1>
+                <img src = "images/minionWinner.png" style = "margin-bottom : 35px"/>
+            </div>
+            <div class="victoryP2">
+                <h1>Victoire du joueur 2 ! </h1>
+                <img src = "images/rabbitWinner.png" style = "margin-bottom : 35px"/>
+            </div>
+        </div>
+        <input type="submit" value="Recommencer" id="reload" action="#">
         </div>
     </div>
     <!--Container principal-->

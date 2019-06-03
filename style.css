@@ -37,6 +37,10 @@ body{
 .attackP1, .attackP2, .defendP1, .defendP2{
     margin-bottom: 10px
 }
+
+#place{
+    margin-top: 200px;
+}
 #game{
     margin-top: 35px;
 }

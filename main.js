@@ -22,6 +22,7 @@ let perso1,
     tour = 0,//Permet de choisir le joueur dont c'est le tour
     moves = 0,
     round = 0,//Tour de combat
+    inFight = false,//permet de bloquer les touches si on entre en phase de combat
     dir;
 
 //*****************DECLARATION DES OBJETS, CLASSES ET METHODES******************
@@ -81,9 +82,11 @@ class Perso {
                 perso2.position == perso1.position -1 ||
                 perso2.position == perso1.position +1 
             ){
+                inFight = true;
                 $('#masque').fadeIn();
                 $('#fightRing').hide();
-            };
+            }
+            return inFight;
         };
     	//Préparation des fonctions up et down
     	let droite  = +1;
@@ -99,7 +102,7 @@ class Perso {
                     perso.position = perso.position + value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
                     addImage(perso.position, perso.avatar, perso.classe);//Ajoute, via la fonction addImage, le CSS.
                     refreshPos();//Met à jour le tableau des positions.
-                    checkFight();//Vérifie sir les deux persos sont côte-à-côte
+                    checkFight();//Vérifie si les deux persos sont côte-à-côte
                     moves ++;
                 };
         };
@@ -126,7 +129,8 @@ class Perso {
             break;
             default:
                 refreshPos();
-            }   
+            }  
+        return inFight;
         };
     };
 
@@ -308,11 +312,16 @@ $('#form2').submit(function(e){
 //************************GENERATION DU PLATEAU***********************************
 //Action au clic sur "Lancer !"
 $('#place, #reload').click(function(e){
+        //Essai de réactivation des touches. Ne Fonctionne pas encore.
+        $(document).on('keydown');
+        //Essai de la même chose avec une variable
+        inFight = false;
+        console.log(inFight);
         //Masquage du bouton de nouvelle partie
         $('#reload, .victoryP1, .victoryP2').hide();
         $('#fightRing').show();
-        //NE PAS RETIRER, Désactivation du bouton, il reste visible le temps du développement
-        //$('#place').hide();
+        //Désactivation du bouton, il reste visible le temps du développement
+        $('#place').hide();
         //Avant tout, suppression du contenu s'il existait déjà pour repartir sur un plateau neuf
         $("td, tr, table").remove();
         //Première étape : création du plateau
@@ -444,7 +453,7 @@ while(i<14){ //Toutes les valeurs de 0 à 15
         };
         refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
         possible(perso1.position);//Ne pas retirer, permet de lancer la fonction possible dès le début du jeu
-    
+    return inFight;
 });//Ne pas retirer, fin de la fonction de création du plateau
     
 //**************************************DEPLACEMENT + INDICATION DE CASES POSSIBLES***********************************
@@ -484,56 +493,58 @@ function checkNext(position){
 };
 
 
+//Essai de blocage de la fonction de déplacement avec un bool
 
 //Fonction de déplacement
-
     $(document).keydown(function(e){
-        dir = e.which;
-        if (tour%2 == 0){
-            possible(perso1.position);
-            if( moves < 4){
-                $('.stopP1, .stopP2').empty();
-                $('.stopP1').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP1" action="#">'));
-                perso1.move(perso1);
-                possible(perso1.position);
-                $('#buttonStopP1').click(function(e){
-                    moves = 0;
-                    tour++;
-                    $('.stopP1, .stopP2').empty();
-                    possible(perso2.position);
-                    return moves;
-                });
-            };
-        } else {
-            possible(perso2.position);
-            if( moves < 4){
-                $('.stopP1, .stopP2').empty();
-                $('.stopP2').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP2" action="#">'));
-                perso2.move(perso2);
-                possible(perso2.position);
-                $('#buttonStopP2').click(function(e){
-                    moves = 0;
-                    tour++;
-                    $('.stopP1, .stopP2').empty();
-                    possible(perso1.position);
-                    return moves;
-                });
-            }
-        }
-        //Tant que moves n'a pas atteint 3, on ne passe pas au tour suivant. 
-        //Cela permet de limiter les déplacements.
-        if(moves == 3){
-            tour ++;
-            moves = 0;
+        if (inFight == false){
+            dir = e.which;
             if (tour%2 == 0){
                 possible(perso1.position);
-                $('.stopP2').empty();
+                if( moves < 4){
+                    $('.stopP1, .stopP2').empty();
+                    $('.stopP1').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP1" action="#">'));
+                    perso1.move(perso1);
+                    possible(perso1.position);
+                    $('#buttonStopP1').click(function(e){
+                        moves = 0;
+                        tour++;
+                        $('.stopP1, .stopP2').empty();
+                        possible(perso2.position);
+                        return moves;
+                    });
+                };
             } else {
                 possible(perso2.position);
-                $('.stopP1').empty();
+                if( moves < 4){
+                    $('.stopP1, .stopP2').empty();
+                    $('.stopP2').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP2" action="#">'));
+                    perso2.move(perso2);
+                    possible(perso2.position);
+                    $('#buttonStopP2').click(function(e){
+                        moves = 0;
+                        tour++;
+                        $('.stopP1, .stopP2').empty();
+                        possible(perso1.position);
+                        return moves;
+                    });
+                }
             }
-        }; 
+            //Tant que moves n'a pas atteint 3, on ne passe pas au tour suivant. 
+            //Cela permet de limiter les déplacements.
+            if(moves == 3){
+                tour ++;
+                moves = 0;
+                if (tour%2 == 0){
+                    possible(perso1.position);
+                    $('.stopP2').empty();
+                } else {
+                    possible(perso2.position);
+                    $('.stopP1').empty();
+                }
+            }; 
         return tour;
+        };
     });
     //*****************************************GESTION DES COMBATS -- PAS ENCORE AU POINT**********************************
 //Essais de fonctions pour désactiver les boutons de combat au tour par tour
@@ -548,6 +559,7 @@ function disableP2(){
 };
 // Laisser le premier coup à l'attaquant
 $('#showFightRing').click(function(){
+    console.log(inFight);
     $('#explain, #showFightRing').hide();
     $('#fightRing').fadeIn();
     if(tour%2 == 0){
@@ -587,6 +599,7 @@ $('#showFightRing').click(function(){
 
 //*****************************GESTION DU CLIC SUR RELOAD************************************************
 $('#reload').click(function(){
+    $(document).on('keydown');
     tour = 0;
     moves = 0;
     perso1.hp = 100;

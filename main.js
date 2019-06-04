@@ -22,6 +22,7 @@ let perso1,
     tour = 0,//Permet de choisir le joueur dont c'est le tour
     moves = 0,
     round = 0,//Tour de combat
+    playP1 = false,
     inFight = false,//permet de bloquer les touches si on entre en phase de combat
     dir;
 
@@ -29,7 +30,7 @@ let perso1,
 //Création d'une classe personnage
 class Perso {
     //Constructeur
-    constructor(nom, hp, degats, arme, score, avatar, position, classe, hasWeapon, weaponClass, weaponAvatar, hasShield){
+    constructor(nom, hp, degats, arme, score, avatar, position, classe, hasWeapon, weaponClass, weaponAvatar, hasShield, alive){
         this.nom = nom;
         this.hp = hp;
         this.degats = degats;
@@ -42,33 +43,57 @@ class Perso {
         this.weaponClass = weaponClass;
         this.weaponAvatar = weaponAvatar;
         this.hasShield = hasShield;
+        this.alive = alive;
     }
     //Méthode d'attaque
     attaque(attaquant, cible){
         //Si les persos ont encore de la vie
         if(attaquant.hp > 0 && cible.hp > 0){
             //Si le bouclier n'est pas utilisé, dégâts 100%
-            if (cible.hasShield = false) {
+            if (cible.hasShield == false) {
                 if((cible.hp - attaquant.degats) >= 0 ){
                 cible.hp -= attaquant.degats;
                 } else if ((cible.hp - attaquant.degats) < 0 ){
                     cible.hp = 0;
+                    cible.alive = false
+                    attaquant.score ++;
+                    tour = 0;
+                    moves = 0;
+                    perso1.hp = 100;
+                    perso1.degats = 10;
+                    perso1.arme = "Aucune";
+                    perso1.hasWeapon = false;
+                    perso1.weaponClass = "";
+                    perso1.weaponAvatar = "";
+                    perso1.hasShield = false;
+                    perso2.hp = 100;
+                    perso2.degats = 10;
+                    perso2.arme = "Aucune";
+                    perso2.hasWeapon = false;
+                    perso2.weaponClass = "";
+                    perso2.weaponAvatar = "";
+                    perso2.hasShield = false;
+                    refreshP1();
+                    refreshP2();
                 }
-            //Si le bouclier est uitilisé, on divise les dégâts reçus par 2
+            //Si le bouclier est utilisé, on divise les dégâts reçus par 2
             } else {
                 cible.hp -= (attaquant.degats / 2); 
-                cible.hasShield = false;
+                cible.hasShield == false;
             };
             //On rafraîchit P1 et P2 
             refreshP1();
             refreshP2();
         };
         //Ajout du score en cas de victoire
-        if (perso1.hp <= 0){
+       /* if (perso1.hp <= 0){
             perso2.score ++;
         } else if (perso2.hp <= 0){
             perso1.score ++;
-        };
+        };*/
+        //Sortie du tour de la méthode d'attaque pour pouvoir l'utiliser en dehors
+        /*tour ++;
+        return tour;*/
     };
     
     //Méthode de récupération d'arme
@@ -176,7 +201,6 @@ function addImage(position, avatar, classe){
     let result = $("td").eq(position).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
     return result;
 };
-
 //Mise à jour du plateau, appelé à chaque tour pour récupérer correctement les positions dans le déplacement
 function refreshPos(){
     //Mise à jour du tableau avec les nouvelles positions
@@ -204,7 +228,7 @@ function refreshPos(){
 function addWeapon(player, weapon, classe){
     if(player.position == weapon.position){
         //On vérifie si le joueur avait une arme. Si oui, on dépose l'ancienne sur le plateau.
-        if(player.hasWeapon = true){
+        if(player.hasWeapon == true){
             $('td').eq(player.position).addClass(player.weaponClass).removeClass(free);
         };
         //On réinitialise les dégâts de base
@@ -229,9 +253,7 @@ function checkPos(player){
     refreshP1();
     refreshP2();
 };
-
 //Insertion provisoire de la vérification de la vie pour les conditions de victoire
-
 //Fonctions d'affichage en HTML des caractéristiques des personnages, utilisée pour mettre à jour ces infos durant le jeu
 function refreshP1(){
     $('#setP1, #setP1Box').empty();
@@ -239,12 +261,14 @@ function refreshP1(){
         .append($('<li>Dégâts : ' + perso1.degats + '</li>'))
             .append($('<li>Arme : ' + perso1.arme + '</li>'))
                 .append($('<li>Score : ' + perso1.score + '</li>'));
-    if (perso1.hasWeapon = true){
+    if (perso1.hasWeapon == true){
         $('#weaponP1, #weaponP1Box').empty();
         $('#weaponP1, #weaponP1Box').append($('<img src="' + perso1.weaponAvatar + '"/>'));
+    } else {
+        $('#weaponP1, #weaponP1Box').empty();
     };
     //Fonction de vérification de la vie des joueurs pour les conditions de victoire
-    if(perso1.hp <= 0){
+    if(perso1.alive == false){
         $('#reload').hide();
         $('#fightRing, .title').hide().fadeOut();
         $('.victoryP2').fadeIn();
@@ -258,12 +282,14 @@ function refreshP2(){
         .append($('<li>Dégâts : ' + perso2.degats + '</li>'))
             .append($('<li>Arme : ' + perso2.arme + '</li>'))
                 .append($('<li>Score : ' + perso2.score + '</li>'));
-    if (perso2.hasWeapon = true){
+    if (perso2.hasWeapon == true){
         $('#weaponP2, #weaponP2Box').empty();
         $('#weaponP2, #weaponP2Box').append($('<img src="' + perso2.weaponAvatar + '"/>'));
+    } else {
+        $('#weaponP2, #weaponP2Box').empty();
     };
     //Essai d'animation plus propre
-    if (perso2.hp <= 0){
+    if (perso2.alive == false){
         $('#reload').hide();
         $('#fightRing, .title').hide().fadeOut();
         $('.victoryP1').fadeIn();
@@ -274,8 +300,8 @@ function refreshP2(){
     
 //Fonction regroupant toutes les créations de personnages et armes
     //Création des personnages
-    perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", false, "", "", false);
-    perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.png", arrayPos[1], "P2", false, "", "", false);
+    perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", false, "", "", false, true);
+    perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.png", arrayPos[1], "P2", false, "", "", false, true);
     //Création des armes
     w1 = new Arme("Epée", 20, "images/epeeSmall.png" , arrayPos[2], "W1");
     w2 = new Arme("Hache", 30, "images/hacheSmall.png" , arrayPos[3], "W2");
@@ -312,11 +338,14 @@ $('#form2').submit(function(e){
 //************************GENERATION DU PLATEAU***********************************
 //Action au clic sur "Lancer !"
 $('#place, #reload').click(function(e){
+        refreshP1();
+                    refreshP2();
+        console.log(perso1);
+        console.log(perso2);
         //Essai de réactivation des touches. Ne Fonctionne pas encore.
         $(document).on('keydown');
         //Essai de la même chose avec une variable
         inFight = false;
-        console.log(inFight);
         //Masquage du bouton de nouvelle partie
         $('#reload, .victoryP1, .victoryP2').hide();
         $('#fightRing').show();
@@ -494,12 +523,13 @@ function checkNext(position){
 
 
 //Essai de blocage de la fonction de déplacement avec un bool
-
+let p1Play;
 //Fonction de déplacement
     $(document).keydown(function(e){
         if (inFight == false){
             dir = e.which;
             if (tour%2 == 0){
+                p1Play = true;
                 possible(perso1.position);
                 if( moves < 4){
                     $('.stopP1, .stopP2').empty();
@@ -515,6 +545,7 @@ function checkNext(position){
                     });
                 };
             } else {
+                p1Play = false;
                 possible(perso2.position);
                 if( moves < 4){
                     $('.stopP1, .stopP2').empty();
@@ -543,64 +574,90 @@ function checkNext(position){
                     $('.stopP1').empty();
                 }
             }; 
-        return tour;
+        return p1Play;
         };
     });
     //*****************************************GESTION DES COMBATS -- PAS ENCORE AU POINT**********************************
 //Essais de fonctions pour désactiver les boutons de combat au tour par tour
+    //A factoriser
 function disableP1(){
-    $('.attackP2, .defendP2').removeAttr('disabled');
-    $('.attackP1, .defendP1').prop('disabled', true);
+    $('.attackP1, .defendP1').hide();
+    $('.attackP2, .defendP2').show();
+    perso2.hasShield = false;
 };
 
 function disableP2(){
-    $('.attackP1, .defendP1').removeAttr('disabled');
-    $('.attackP2, .defendP2').prop('disabled', true);
+    $('.attackP2, .defendP2').hide();
+    $('.attackP1, .defendP1').show();
+    perso1.hasShield = false;
 };
 // Laisser le premier coup à l'attaquant
-$('#showFightRing').click(function(){
-    console.log(inFight);
+$('#showFightRing').click(function(e){
     $('#explain, #showFightRing').hide();
     $('#fightRing').fadeIn();
-    if(tour%2 == 0){
-        //disableP1();
-        //Désactivation du bouclier
-        perso1.hasShield = false;
-        //Ecoute du clic sur "attaquer"
+    /*if(tour%2 == 0){
+        playP1 = true;
+    } else {
+        playP1 = false;
+    }*/
+    
+    
+    if(p1Play == true){
+        disableP2();
+    } else if (p1Play == false){
+        disableP1();
+    };
+    
+    //Ecoute des boutons P1
         $('.attackP1').click(function(e){
+            console.log("Clic P1 attaque");
+            p1Play = false;
             perso1.attaque(perso1, perso2);
             console.log("Tour = " + tour);
             tour ++;
-            return tour;
+            disableP1();
+            e.preventDefault();
+            //return tour;
         });
         $('.defendP1').click(function(e){
-            perso1.hasShield = true;
+            p1Play = false;
             tour ++;
-            return tour;
+            disableP1();
+            perso1.hasShield = true;
+            e.preventDefault();
+            //tour ++;
+            //return tour;
         });
-    } else {
-        //disableP2();
-        //Désactivation du bouclier
-        perso2.hasShield = false;
-        //Ecoute du clic sur "attaquer"
-        $('.attackP2').click(function(e){
+    //Ecoute des boutons P2
+    $('.attackP2').click(function(e){
+            p1Play = true;
             perso2.attaque(perso2, perso1);
             console.log("Tour = " + tour);
+            console.log("P1.play = " + p1Play)
             tour ++;
-            return tour;
+            disableP2();
+            e.preventDefault();
+            //return tour;
         });
         $('.defendP2').click(function(e){
-            perso2.hasShield = true;
             tour ++;
-            return tour;
+            disableP2();
+            p1Play = true;
+            perso2.hasShield = true;
+            //tour ++;
+           // return tour;
+            e.preventDefault();
         });
-    };
+    
+e.preventDefault();
 });
 
 //*****************************GESTION DU CLIC SUR RELOAD************************************************
 $('#reload').click(function(){
     $(document).on('keydown');
-    tour = 0;
+    perso1.alive = true;
+    perso2.alive = true;
+    /*tour = 0;
     moves = 0;
     perso1.hp = 100;
     perso1.degats = 10;
@@ -617,7 +674,7 @@ $('#reload').click(function(){
     perso2.weaponAvatar = "";
     perso2.hasShield = false;
     refreshP1();
-    refreshP2();
+    refreshP2();*/
     $('.stopP1, .stopP2').empty();
     $('#masque, #reload').hide();
     $("td, tr, table").remove();

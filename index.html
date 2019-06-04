@@ -6,7 +6,64 @@
     <link rel="stylesheet" href="style.css">
 </head> 
 
-<body> 
+<body>
+    <!--Fenêtre de combat masquée si elle n'est pas utilisée-->
+    <div id="masque">
+        <div id = "fight-container">
+        <div id="fightBox">
+            <h2 class = "title">Il est temps de se battre !</h2>
+            <p id="explain">A chaque tour, vous pouvez attaquer ou défendre. Si vous choisissez d'attaquer, vous infligerez autant de dégâts qu'indiqué. Si vous défendez, le prochain coup reçu ne vous infligera que la moitié des dégâts indiqués. Le joueur à l'origine du combat commence. Bonne chance !</p>
+            <input type="submit" value="On y va !" id="showFightRing" action="#">
+            <div id="fightRing">
+                <!--Partie de gauche de la fenêtre de combat-->
+                <div id="left">
+                    <h3>Joueur 1</h3>
+                    <img src="images/minion.png" alt="Perso1" class="avatar" id="img1Box">
+                    <h4>Caractéristiques :</h4>
+                    <div class="flexPerso1">
+                        <ul id="setP1Box">
+                        <!--Sera remplie par la suite en jQuery/JS-->
+                        </ul>
+                        <span id="weaponP1Box"></span>
+                    </div>
+                    <!--Ajout des boutons de combat-->
+                    <div class="fightButtonsP1">
+                        <input type="submit" value="Attaquer !" class="attackP1" action="#"> 
+                        <input type="submit" value="Défendre (-50% de dégâts reçus)" class="defendP1" action="#">
+                    </div> 
+                </div>
+                <div class="separator"></div>
+                <!--Partie de droite de la fenêtre de combat-->
+                <div id="right">
+                    <h3>Joueur 2</h3>
+                    <img src="images/lapin.jpg" alt="Perso2" class="avatar" id="img2Box">
+                    <h4>Caractéristiques :</h4>
+                    <div class="flexPerso2">
+                        <ul id="setP2Box">
+                        <!--Sera remplie par la suite en jQuery/JS-->
+                        </ul>
+                        <span id="weaponP2Box"></span>
+                    </div>
+                    <!--Ajout des boutons de combat-->
+                    <div class="fightButtonsP2">
+                        <input type="submit" value="Attaquer !" class="attackP2" action="#"> 
+                        <input type="submit" value="Défendre (-50% de dégâts reçus)" class="defendP2" action="#">
+                    </div>
+                </div> 
+            </div>
+            <!--Elements affichés en cas de victoire-->
+            <div class="victoryP1">
+                <h1>Victoire du joueur 1 ! </h1>
+                <img src = "images/minionWinner.png" style = "margin-bottom : 35px"/>
+            </div>
+            <div class="victoryP2">
+                <h1>Victoire du joueur 2 ! </h1>
+                <img src = "images/rabbitWinner.png" style = "margin-bottom : 35px"/>
+            </div>
+        </div>
+        <input type="submit" value="Recommencer" id="reload" action="#">
+        </div>
+    </div>
     <!--Container principal-->
     <div class="flex-container" id="game">
         <!--Container de gauche, premier perso-->
@@ -19,9 +76,14 @@
             </form>
             <img src="images/minion.png" alt="Perso1" class="avatar" id="img1">
             <h4>Caractéristiques :</h4>
-            <ul id="setP1">
-            <!--Sera remplie par la suite en jQuery/JS-->
-            </ul> 
+            <div class="flexPerso1">
+                <ul id="setP1">
+                <!--Sera remplie par la suite en jQuery/JS-->
+                </ul>
+                <span id="weaponP1"></span>
+            </div>
+            <div class ="stopP1"></div>
+            <!--Ajout des boutons de combat-->
         </div>
         <!--Container central, plateau-->
         <div id="battlefield">
@@ -37,9 +99,13 @@
             </form>
             <img src="images/lapin.jpg" alt="Perso2" class="avatar" id="img2">
             <h4>Caractéristiques :</h4>
-            <ul id="setP2">
-            <!--Sera remplie par la suite en jQuery/JS-->
-            </ul> 
+            <div class="flexPerso2">
+                <ul id="setP2">
+                <!--Sera remplie par la suite en jQuery/JS-->
+                </ul>
+                <span id="weaponP2"></span>
+            </div>
+            <div class ="stopP2"></div>
         </div> 
     </div>
 <script src="http://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>

@@ -1,12 +1,56 @@
 body{
     font-family: gadugi;
 }
+/*Fenêtre de combat avec opacité de fond pour masquer le plateau*/
+#masque{
+    position: fixed;
+    top:0px;
+    left:0px;  
+    width: 100%; 
+    height:100%;  
+    z-index: 1000;
+    background-color: rgba(0,0,0,0.7);
+    display: none;
+}
 
+#fight-container{
+    background-color: white;
+    margin: 100px ;
+    text-align: center;
+    padding: 20px;
+}
+#fightBox{
+    background-color: white;
+    margin: 100px, 20px ;
+    text-align: center;
+    padding: 20px 20px;;
+}
+.separator{
+    width: 15px;
+}
+
+.fightButtonsP1, .fightButtonsP2{
+    display: flex;
+    flex-direction: column;
+}
+
+.attackP1, .attackP2, .defendP1, .defendP2{
+    margin-bottom: 10px
+}
+
+#place{
+    margin-top: 200px;
+}
 #game{
+    margin-top: 35px;
+}
+#game, .flexPerso1, .flexPerso2, #fightRing{
     display: flex;
     justify-content: center;
 }
-
+#weaponP1, #weaponP2, #weaponP1Box, #weaponP2Box{
+    margin: auto 25px;
+}
 #left, #right{
     padding: 10px;
 }
@@ -47,12 +91,38 @@ ul{
     list-style-type: none; 
 }
 .occuped{
-    background-color: dimgray;
+    background-color: gray;
 }
 .avatar{
     padding-top: 10px;
     max-height: 200px;
 }
-.blue{
-    background-color: aqua;
+.possible{
+    background-color: palegoldenrod;
+}
+
+#stopP1, #stopP2{
+    display: block;
+    margin: 0 auto;;
+}
+/*Ajout des classes pour lacher les armes*/
+.W1{
+    background-image: url(images/epeeSmall.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.W2{
+    background-image: url(images/hacheSmall.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.W3{
+    background-image: url(images/lanceSmall.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.W4{
+    background-image: url(images/fleauSmall.png);
+    background-repeat: no-repeat;
+    background-position: center center;
 }

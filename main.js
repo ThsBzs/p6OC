@@ -124,11 +124,11 @@ class Perso {
             }
             return inFight;
         };
-    	//Préparation des fonctions up et down
-    	let droite  = +1;
-    	let gauche = -1;
-    	let haut = -10;
-    	let bas = +10; 
+        //Préparation des fonctions up et down
+        let droite  = +1;
+        let gauche = -1;
+        let haut = -10;
+        let bas = +10; 
         function movePlayer(value){
             if ((!$('td').eq(perso.position + value).hasClass("occuped")) && 
                     (!$('td').eq(perso.position + value).hasClass("P1")) &&
@@ -327,7 +327,7 @@ function refreshP2(){
 //************************ AJOUT DES NOMS DES PERSONNAGES EN HTML*****************************
 //Joueur1
 $('#form1').submit(function(e){
-	let saisie1 = form1.elements.nom1;
+    let saisie1 = form1.elements.nom1;
     $($('<h3>Nom : ' + saisie1.value + '</h3>')).insertAfter('#img1');
     $($('<h3>Nom : ' + saisie1.value + '</h3>')).insertAfter('#img1Box');
     refreshP1();
@@ -449,12 +449,12 @@ $('#place, #reload').click(function(e){
  /*   
 i= 1;
 while(i<14){ //Toutes les valeurs de 0 à 15 
-	j=0;
-	blablabla;
-	while(j<i){//Vérifie une valeur avant de l'ajouter dans le tableau
-		j++;
-	}
-	i++;
+    j=0;
+    blablabla;
+    while(j<i){//Vérifie une valeur avant de l'ajouter dans le tableau
+        j++;
+    }
+    i++;
 };*/
        
         //console.log("Arr = " + arr);

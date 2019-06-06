@@ -352,7 +352,16 @@ $('#form2').submit(function(e){
 
 //************************GENERATION DU PLATEAU***********************************
 //Action au clic sur "Lancer !"
+
 $('#place, #reload').click(function(e){
+    console.log("clic sur reload");
+        tour = 0;
+        moves = 0;
+        $('.stopP1, .stopP2').empty();
+        $('#masque, #reload').hide();
+        $("td, tr, table").remove();
+        $('#explain, #showFightRing, .title').show();
+        $('#rulesBox').fadeOut();
         perso1.newRound(perso1);
         perso2.newRound(perso2);
         refreshP1();
@@ -369,9 +378,10 @@ $('#place, #reload').click(function(e){
         //Désactivation du bouton, il reste visible le temps du développement
         $('#place').hide();
         //Avant tout, suppression du contenu s'il existait déjà pour repartir sur un plateau neuf
+        //$('#battlefield').empty();
         $("td, tr, table").remove();
         //Première étape : création du plateau
-        $('#battlefield').prepend($('<table>')
+        $('#battlefield').append($('<table>')
             .attr('id', 'playBoard1'));
         const board1 = new Board(9, 9);
         const lines = board1.lines;
@@ -397,11 +407,14 @@ $('#place, #reload').click(function(e){
         arr.push(aGriser);
         //Fonction de vérification de 2 valeurs avant ajout dans le tableau
         //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
-        
+        let essai = [];
         let checked;
         function check(value1, value2){
             let arrToCheck = [(value2 -11), (value2 -10), (value2 -9), (value2 -1), (value2 +1), (value2 +9), (value2 +10), (value2 +11)];
-            if ((!arr.includes(value1)) && (!arrToCheck.includes(value1))) {
+            /*if(!essai.includes(arrToCheck)){
+                essai.push(arrToCheck);
+            }*/
+            if ((!arr.includes(value1)) && !arrToCheck.includes(value1)) {
                 checked = value1;
                 console.log("Checked = " + checked);
                 console.log("ArrToCheck = " + arrToCheck);
@@ -409,17 +422,18 @@ $('#place, #reload').click(function(e){
         };
     
         
-        i = 0;
+        i = 1;
         while (i < 17) {
             melt();
             for (j = 0, j < arr.length; j <= i; j++){
                 check(aGriser, arr[j]);
+                if((checked !== undefined) && (checked !== -1)){
+                    arr.push(checked);
+                };
             };
-            if((checked != undefined) && (checked != -1)){
-                arr.push(checked);
                 i ++;
             };
-        };
+        
 
 
     //************************MISE EN ATTENTE POUR PASSAGE EN BOUCLE SESSION MENTORAT**************************
@@ -591,7 +605,7 @@ let p1Play;
         return p1Play;
         };
     });
-    //*****************************************GESTION DES COMBATS -- PAS ENCORE AU POINT**********************************
+    //*****************************************GESTION DES COMBATS **********************************
 //Essais de fonctions pour désactiver les boutons de combat au tour par tour
     //A factoriser
 function disableP1(){
@@ -653,8 +667,8 @@ $('#reload').click(function(){
     moves = 0;
     $('.stopP1, .stopP2').empty();
     $('#masque, #reload').hide();
-    $("td, tr, table").remove();
-    $('#place, #explain, #showFightRing, .title').show();
+    //$("td, tr, table").remove();
+    $('#explain, #showFightRing, .title').show();
 });
 
 

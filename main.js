@@ -398,7 +398,7 @@ $('#place, #reload').click(function(e){
         //Lancement du positionnement de tous les éléments (cases occupées, armes et persos)
         let free = document.querySelectorAll(".free");//Renvoie un array de toutes les cases .free
         function melt (){
-            aGriser = (Math.floor(Math.random()*free.length));//Renvoie une valeur au hasard dans ce tableau  
+            aGriser = (Math.floor(Math.random()*free.length));//Renvoie une valeur au hasard dans ce tableau 
         };
         //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
         let arr = [];
@@ -407,31 +407,40 @@ $('#place, #reload').click(function(e){
         arr.push(aGriser);
         //Fonction de vérification de 2 valeurs avant ajout dans le tableau
         //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
-        let essai = [];
-        let checked;
-        function check(value1, value2){
+        
+        
+        function aGriserEstElleOk(value1, value2){
             let arrToCheck = [(value2 -11), (value2 -10), (value2 -9), (value2 -1), (value2 +1), (value2 +9), (value2 +10), (value2 +11)];
-            /*if(!essai.includes(arrToCheck)){
-                essai.push(arrToCheck);
-            }*/
-            if ((!arr.includes(value1)) && !arrToCheck.includes(value1) && (value1 !== undefined) && (value1 !== -1)) {
-                checked = value1;
-                console.log("Checked = " + checked);
-                console.log("ArrToCheck = " + arrToCheck);
+            if ((arr.includes(value1)) && (arrToCheck.includes(value1))) {
+                return false;
+            } else {
+                return true;
             };
+            
         };
     
         
         i = 1;
         while (i < 17) {
             melt();
-            for (j = 0, j < arr.length; j <= i; j++){
-                check(aGriser, arr[j]);
+            for (j = 0; j < arr.length; j++){
+                aGriserEstElleOk(aGriser, arr[j]);
+                if(aGriserEstElleOk(aGriser, arr[j]) == true){
+                    j++;
+                } else { 
+                    break;
+                };   
             };
-                arr.push(checked);
-                i ++;
-            };
-        
+            if (j = i){
+                arr.push(aGriser);
+                i++;
+            }
+            
+            
+        };
+
+
+        console.log(arr);
 
 
     //************************MISE EN ATTENTE POUR PASSAGE EN BOUCLE SESSION MENTORAT**************************
@@ -477,7 +486,7 @@ while(i<14){ //Toutes les valeurs de 0 à 15
             if (arrIndex<= 9){//Fera donc 10 tours en changeant le css en grey
                 addImage(arr[arrIndex], occupe.avatar, occupe.classe);
                 arrIndex ++;//On augmente la valeur d'arrIndex à chaque fois, pour ne pas repasser sur la même case
-            } else if (arrIndex>9 && arrIndex <= 13){//4 tours avec les armes
+            } else if (arrIndex>9 && arrIndex <= 13 ){//4 tours avec les armes
                 //Switch sur les index concernés pour attribuer une arme différente à chaque fois
                 switch(arrIndex){
                     case 10:

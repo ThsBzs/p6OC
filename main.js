@@ -215,11 +215,12 @@ function addImage(position, avatar, classe){
 //Mise à jour du plateau, appelé à chaque tour pour récupérer correctement les positions dans le déplacement
 function refreshPos(){
     //Mise à jour du tableau avec les nouvelles positions
+    //On vide le tableaux avant de les remplir avec les nouvelles valeurs
     arrayPos = [] ;
     tableau = [];
     tableau = Array.from(document.querySelectorAll("td"));
     //Cette fonction renvoie la position de l'élément passé en paramètre.
-    function position(elt){//elt est la classe correspondante au perso concerné
+    function position(elt){//elt est la classe correspondante au perso ou arme concerné
         let result = tableau.indexOf(document.querySelector(elt)); 
         return result;
     };
@@ -230,9 +231,12 @@ function refreshPos(){
     w3.position = position(".W3");
     w4.position = position(".W4");
     arrayPos = [perso1.position, perso2.position, w1.position, w3.position, w4.position];
-    //console.log("ArrayPos : " + arrayPos);
-    checkPos(perso1);
-    checkPos(perso2);
+    //Ce if évite que la fonction checkPos soit appelée sans nécessité sur un joueur immobile.
+    if(p1Play == true){
+        checkPos(perso1);
+    } else {
+        checkPos(perso2);
+    };
     return arrayPos;//ArrayPos est le tableau des positions, permet de travailler ensuite sur toutes les positions
 };   
 //Fonction de récupération d'arme
@@ -385,40 +389,48 @@ $('#place, #reload').click(function(e){
         let free = document.querySelectorAll(".free");//Renvoie un array de toutes les cases .free
         function melt (){
             aGriser = (Math.floor(Math.random()*free.length));//Renvoie une valeur au hasard dans ce tableau  
-            return aGriser;
         };
         //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
         let arr = [];
+        melt();
+        console.log("Agriser = " + aGriser);
+        arr.push(aGriser);
         //Fonction de vérification de 2 valeurs avant ajout dans le tableau
         //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
-    
+        
+        let checked;
         function check(value1, value2){
-            if ((!arr.includes(value1)) && 
-                (!arr.includes(value2)) && 
-                (value1 != value2) && 
-                (value1 != (value2 -11)) && 
-                (value1 != (value2 -10)) && 
-                (value1 != (value2 -9)) && 
-                (value1 != (value2 -1)) && 
-                (value1 != (value2 +1)) && 
-                (value1 != (value2 +9)) && 
-                (value1 != (value2 +10)) && 
-                (value1 != (value2 +11))){
-                //console.log("Value1 = " + value1);
-                //console.log("Value2 = " + value2);
-                arr.push(value1);
+            let arrToCheck = [(value2 -11), (value2 -10), (value2 -9), (value2 -1), (value2 +1), (value2 +9), (value2 +10), (value2 +11)];
+            if ((!arr.includes(value1)) && (!arrToCheck.includes(value1))) {
+                checked = value1;
+                console.log("Checked = " + checked);
+                console.log("ArrToCheck = " + arrToCheck);
             };
-            return arr;
         };
     
+        
+        i = 0;
+        while (i < 17) {
+            melt();
+            for (j = 0, j < arr.length; j <= i; j++){
+                check(aGriser, arr[j]);
+            };
+            if((checked != undefined) && (checked != -1)){
+                arr.push(checked);
+                i ++;
+            };
+        };
+
+
     //************************MISE EN ATTENTE POUR PASSAGE EN BOUCLE SESSION MENTORAT**************************
-/*    //Ajout de 15 valeurs dans le tableau
-    while(arr.length<=14){//On limite la taille du tableau 
+    //Ajout de 15 valeurs dans le tableau
+/*    while(arr.length<=14){//On limite la taille du tableau 
         melt();
         if(!arr.includes(aGriser)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
             arr.push(aGriser);
         };
     };
+    //Ajout du P2 dans le tableau, en vérifiant sa proximité avec P1
     //Ajout du P2 dans le tableau, en vérifiant sa proximité avec P1
      while(arr.length<=15){//On limite la taille du tableau 
          melt();
@@ -433,18 +445,7 @@ $('#place, #reload').click(function(e){
     //Première version d'une boucle pour le placement avec vérification des positions
     //Piste de boucle imbriquée pour la fonction check
 
-        i = 1;
- 
-        while (i < 17) {
-            for (j = 0, j < arr.length; j <i; j++){
-                melt();
-                check(aGriser, arr[j]);
-                //console.log("Arr[j] = " + arr[j]);
-                //console.log("aGriser = " + aGriser);
-                //console.log("arr = " + arr);
-            };
-            i ++;
-        };
+       
 
  /*   
 i= 1;

@@ -435,8 +435,6 @@ $('#place, #reload').click(function(e){
                 arr.push(aGriser);
                 i++;
             }
-            
-            
         };
 
 
@@ -557,7 +555,7 @@ function checkNext(position){
 };
 
 
-//Essai de blocage de la fonction de déplacement avec un bool
+//Création d'un booleen pour bloquer le déplacement si oin passe en combat
 let p1Play;
 //Fonction de déplacement
     $(document).keydown(function(e){

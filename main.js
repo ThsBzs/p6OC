@@ -414,7 +414,7 @@ $('#place, #reload').click(function(e){
             /*if(!essai.includes(arrToCheck)){
                 essai.push(arrToCheck);
             }*/
-            if ((!arr.includes(value1)) && !arrToCheck.includes(value1)) {
+            if ((!arr.includes(value1)) && !arrToCheck.includes(value1) && (value1 !== undefined) && (value1 !== -1)) {
                 checked = value1;
                 console.log("Checked = " + checked);
                 console.log("ArrToCheck = " + arrToCheck);
@@ -427,10 +427,8 @@ $('#place, #reload').click(function(e){
             melt();
             for (j = 0, j < arr.length; j <= i; j++){
                 check(aGriser, arr[j]);
-                if((checked !== undefined) && (checked !== -1)){
-                    arr.push(checked);
-                };
             };
+                arr.push(checked);
                 i ++;
             };
         

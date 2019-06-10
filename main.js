@@ -3,17 +3,8 @@ $(function(){//Attente du chargement complet du DOM avant modification
 //Préparation des persos et armes
 let perso1,
     perso2,
-    epee,
-    hache,
-    lance,
-    fleau,
-    occupe,
-    free,//Tableau pour le positionnement. Est utilisé pour les déplacements
-//Préparation du tableau
-    aGriser,//Correspond aux cases occupées, sera défini dans la fonction d'occupation du tableau
-    result,//Correspond aux index renvoyés par la fonction aleatoire pour le placement des persos
-    tableau,//Correspond au tableau global, mis à jour pour les positions
-//Préparation des déplacements
+    //Tableau pour le positionnement. Est utilisé pour les déplacements
+    //Préparation des déplacements
     arrayPos = [],
     arrayUp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],//Bordure haute
     arrayLeft = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90],//Bordure gauche
@@ -21,7 +12,6 @@ let perso1,
     arrayRight = [9,19, 29, 39, 49, 59, 69, 79, 89, 99],//Bordure droite
     tour = 0,//Permet de choisir le joueur dont c'est le tour
     moves = 0,
-    round = 0,//Tour de combat
     playP1 = false,
     inFight = false,//permet de bloquer les touches si on entre en phase de combat
     dir;
@@ -93,22 +83,28 @@ class Perso {
                     refreshP2();
                 }
             };
-            //On rafraîchit P1 et P2 
-            
-        //};
-        //Ajout du score en cas de victoire
-       /* if (perso1.hp <= 0){
-            perso2.score ++;
-        } else if (perso2.hp <= 0){
-            perso1.score ++;
-        };*/
-        //Sortie du tour de la méthode d'attaque pour pouvoir l'utiliser en dehors
-        /*tour ++;
-        return tour;*/
     };
     
     //Méthode de récupération d'arme
-    
+    addWeapon(perso, weapon, classe){
+    if(perso.position == weapon.position){
+        //On vérifie si le joueur avait une arme. Si oui, on dépose l'ancienne sur le plateau.
+        if(perso.hasWeapon == true){
+            $('td').eq(perso.position).addClass(perso.weaponClass).removeClass("free");
+        };
+        //On réinitialise les dégâts de base
+        perso.degats = 10;
+        //On ajoute les infos de l'arme au perso
+        perso.arme = weapon.nom;
+        perso.degats += weapon.degats;
+        perso.weaponClass = weapon.classe;
+        perso.weaponAvatar = weapon.avatar;
+        //On retire l'arme de la case 
+        $('td').eq(weapon.position).removeClass(classe);
+        //On met à jour le hasWeapon sur vrai
+        perso.hasWeapon = true;
+    };
+};
     //Méthode de déplacement n'utilisant pas de paramètre 
     move(perso){
         //Fonction pour l'affichage des boutons d'attaque/défense
@@ -201,74 +197,19 @@ class Board{
     }
 };
 
-//**********************************PREPARATION DES FONCTIONS UTILISEES POUR LES DEPLACEMENTS****************************************
-//Fonction de suppression du css pour retirer l'image
-function remove(position, classe){
-    $("td").eq(position).removeAttr("style").removeClass(classe).addClass("free");
-    //$("td").eq(position).css("background-image", "none").removeClass(classe).addClass("free");
-};
-//Ajout de l'image
-function addImage(position, avatar, classe){
-    let result = $("td").eq(position).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
-    return result;
-};
-//Mise à jour du plateau, appelé à chaque tour pour récupérer correctement les positions dans le déplacement
-function refreshPos(){
-    //Mise à jour du tableau avec les nouvelles positions
-    //On vide le tableaux avant de les remplir avec les nouvelles valeurs
-    arrayPos = [] ;
-    tableau = [];
-    tableau = Array.from(document.querySelectorAll("td"));
-    //Cette fonction renvoie la position de l'élément passé en paramètre.
-    function position(elt){//elt est la classe correspondante au perso ou arme concerné
-        let result = tableau.indexOf(document.querySelector(elt)); 
-        return result;
-    };
-    perso1.position = position(".P1");
-    perso2.position = position(".P2");
-    w1.position = position(".W1");
-    w2.position = position(".W2");
-    w3.position = position(".W3");
-    w4.position = position(".W4");
-    arrayPos = [perso1.position, perso2.position, w1.position, w3.position, w4.position];
-    //Ce if évite que la fonction checkPos soit appelée sans nécessité sur un joueur immobile.
-    if(p1Play == true){
-        checkPos(perso1);
-    } else {
-        checkPos(perso2);
-    };
-    return arrayPos;//ArrayPos est le tableau des positions, permet de travailler ensuite sur toutes les positions
-};   
-//Fonction de récupération d'arme
-function addWeapon(player, weapon, classe){
-    if(player.position == weapon.position){
-        //On vérifie si le joueur avait une arme. Si oui, on dépose l'ancienne sur le plateau.
-        if(player.hasWeapon == true){
-            $('td').eq(player.position).addClass(player.weaponClass).removeClass(free);
-        };
-        //On réinitialise les dégâts de base
-        player.degats = 10;
-        //On ajoute les infos de l'arme au perso
-        player.arme = weapon.nom;
-        player.degats += weapon.degats;
-        player.weaponClass = weapon.classe;
-        player.weaponAvatar = weapon.avatar;
-        //On retire l'arme de la case 
-        $('td').eq(weapon.position).removeClass(classe);
-        //On met à jour le hasWeapon sur vrai
-        player.hasWeapon = true;
-    };
-};
-    
-function checkPos(player){
-    addWeapon(player, w1, "W1");
-    addWeapon(player, w2, "W2");
-    addWeapon(player, w3, "W3");
-    addWeapon(player, w4, "W4");
-    refreshP1();
-    refreshP2();
-};
-//Insertion provisoire de la vérification de la vie pour les conditions de victoire
+//Création des personnages
+perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", false, "", "", false, true);
+perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.png", arrayPos[1], "P2", false, "", "", false, true);
+//Création des armes
+w1 = new Arme("Epée", 20, "images/epeeSmall.png" , arrayPos[2], "W1");
+w2 = new Arme("Hache", 30, "images/hacheSmall.png" , arrayPos[3], "W2");
+w3 = new Arme("Lance", 25, "images/lanceSmall.png" , arrayPos[4], "W3");
+w4 = new Arme("Fléau", 25, "images/fleauSmall.png" , arrayPos[5], "W4");
+//Création des blocs occupés
+occupe = new Occuped("images/grisSmall.jpg", "occuped");
+
+
+//*******************************************FONCTIONS DE RAFRAICHISSEMENT DES INFOS HTML*************************************
 //Fonctions d'affichage en HTML des caractéristiques des personnages, utilisée pour mettre à jour ces infos durant le jeu
 function refreshP1(){
     $('#setP1, #setP1Box').empty();
@@ -311,22 +252,55 @@ function refreshP2(){
         $('#reload').fadeIn();
     };
 };
-    
-    
-//Fonction regroupant toutes les créations de personnages et armes
-    //Création des personnages
-    perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", false, "", "", false, true);
-    perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.png", arrayPos[1], "P2", false, "", "", false, true);
-    //Création des armes
-    w1 = new Arme("Epée", 20, "images/epeeSmall.png" , arrayPos[2], "W1");
-    w2 = new Arme("Hache", 30, "images/hacheSmall.png" , arrayPos[3], "W2");
-    w3 = new Arme("Lance", 25, "images/lanceSmall.png" , arrayPos[4], "W3");
-    w4 = new Arme("Fléau", 25, "images/fleauSmall.png" , arrayPos[5], "W4");
-    //Création des blocs occupés
-    occupe = new Occuped("images/grisSmall.jpg", "occuped");
 
 
-   
+//*******************************************FONCTIONS UTILISEES POUR LES DEPLACEMENTS****************************************
+//Suppression du css pour retirer l'image
+function remove(position, classe){
+    $("td").eq(position).removeAttr("style").removeClass(classe).addClass("free");
+};
+//Ajout de l'image
+function addImage(position, avatar, classe){
+    let resultImage = $("td").eq(position).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
+    return resultImage;
+};
+//Vérification de l'ajout ou non d'une arme 
+function checkPos(player){
+    player.addWeapon(player, w1, "W1");
+    player.addWeapon(player, w2, "W2");
+    player.addWeapon(player, w3, "W3");
+    player.addWeapon(player, w4, "W4");
+    refreshP1();
+    refreshP2();
+};
+//Mise à jour du plateau, appelé à chaque tour pour récupérer correctement les positions dans le déplacement
+function refreshPos(){
+    //On vide le tableau avant de le remplir avec les nouvelles valeurs
+    arrayPos = [] ;
+    let tableau = Array.from(document.querySelectorAll("td"));
+    //Cette fonction renvoie la position de l'élément passé en paramètre.
+    function position(elt){//elt est la classe correspondante au perso ou arme concerné
+        let resultPosition = tableau.indexOf(document.querySelector(elt)); 
+        return resultPosition;
+    };
+    //Appel de la fonction sur chaque élément 
+    perso1.position = position(".P1");
+    perso2.position = position(".P2");
+    w1.position = position(".W1");
+    w2.position = position(".W2");
+    w3.position = position(".W3");
+    w4.position = position(".W4");
+    //Remplissage d'arrayPos avec les nouvelles positions
+    arrayPos = [perso1.position, perso2.position, w1.position, w3.position, w4.position];
+    //Ce if évite que la fonction checkPos ne soit appelée sans nécessité sur un joueur immobile.
+    if(p1Play == true){
+        checkPos(perso1);
+    } else {
+        checkPos(perso2);
+    };
+    return arrayPos;//ArrayPos est le tableau des positions, permet de travailler ensuite sur toutes les positions
+};   
+
 
 //************************ AJOUT DES NOMS DES PERSONNAGES EN HTML*****************************
 //Joueur1
@@ -354,189 +328,132 @@ $('#form2').submit(function(e){
 //Action au clic sur "Lancer !"
 
 $('#place, #reload').click(function(e){
-    console.log("clic sur reload");
-        tour = 0;
-        moves = 0;
-        $('.stopP1, .stopP2').empty();
-        $('#masque, #reload').hide();
-        $("td, tr, table").remove();
-        $('#explain, #showFightRing, .title').show();
-        $('#rulesBox').fadeOut();
-        perso1.newRound(perso1);
-        perso2.newRound(perso2);
-        refreshP1();
-        refreshP2();
-        console.log(perso1);
-        console.log(perso2);
-        //Essai de réactivation des touches. Ne Fonctionne pas encore.
-        $(document).on('keydown');
-        //Essai de la même chose avec une variable
-        inFight = false;
-        //Masquage du bouton de nouvelle partie
-        $('#reload, .victoryP1, .victoryP2').hide();
-        $('#fightRing').show();
-        //Désactivation du bouton, il reste visible le temps du développement
-        $('#place').hide();
-        //Avant tout, suppression du contenu s'il existait déjà pour repartir sur un plateau neuf
-        //$('#battlefield').empty();
-        $("td, tr, table").remove();
-        //Première étape : création du plateau
-        $('#battlefield').append($('<table>')
-            .attr('id', 'playBoard1'));
-        const board1 = new Board(9, 9);
-        const lines = board1.lines;
-        const cases = board1.cases;
-        for (i=0; i<=lines; i++){
-            $('table').append($('<tr>'));
-        };
-        $('tr').each(function(){
-            for (i=0; i<=cases; i++){
-                $(this).append($('<td class="free">'));
-            };
-        });
-   
-        //Lancement du positionnement de tous les éléments (cases occupées, armes et persos)
-        let free = document.querySelectorAll(".free");//Renvoie un array de toutes les cases .free
-        function melt (){
-            aGriser = (Math.floor(Math.random()*free.length));//Renvoie une valeur au hasard dans ce tableau 
-        };
-        //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
-        let arr = [];
-        melt();
-        console.log("Agriser = " + aGriser);
-        arr.push(aGriser);
-        //Fonction de vérification de 2 valeurs avant ajout dans le tableau
-        //Est utilsée pour le P2, afin d'éviter une apparition collée au P1
-        
-        
-        function aGriserEstElleOk(value1, value2){
-            let arrToCheck = [(value2 -11), (value2 -10), (value2 -9), (value2 -1), (value2 +1), (value2 +9), (value2 +10), (value2 +11)];
-            if ((arr.includes(value1)) && (arrToCheck.includes(value1))) {
-                return false;
-            } else {
-                return true;
-            };
-            
-        };
-    
-        
-        i = 1;
-        while (i < 17) {
-            melt();
-            for (j = 0; j < arr.length; j++){
-                aGriserEstElleOk(aGriser, arr[j]);
-                if(aGriserEstElleOk(aGriser, arr[j]) == true){
-                    j++;
-                } else { 
-                    break;
-                };   
-            };
-            if (j = i){
-                arr.push(aGriser);
-                i++;
-            }
-        };
-
-
-        console.log(arr);
-
-
-    //************************MISE EN ATTENTE POUR PASSAGE EN BOUCLE SESSION MENTORAT**************************
-    //Ajout de 15 valeurs dans le tableau
-/*    while(arr.length<=14){//On limite la taille du tableau 
-        melt();
-        if(!arr.includes(aGriser)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
-            arr.push(aGriser);
-        };
+    tour = 0;
+    moves = 0;
+    $('.stopP1, .stopP2').empty();
+    $('#masque, #reload').hide();
+    $("td, tr, table").remove();
+    $('#explain, #showFightRing, .title').show();
+    $('#rulesBox').fadeOut();
+    perso1.newRound(perso1);
+    perso2.newRound(perso2);
+    refreshP1();
+    refreshP2();
+    //Essai de la même chose avec une variable
+    inFight = false;
+    //Masquage du bouton de nouvelle partie
+    $('#reload, .victoryP1, .victoryP2').hide();
+    $('#fightRing').show();
+    //Avant tout, suppression du contenu s'il existait déjà pour repartir sur un plateau neuf
+    //$('#battlefield').empty();
+    $("td, tr, table").remove();
+    //Première étape : création du plateau
+    $('#battlefield').append($('<table>')
+        .attr('id', 'playBoard1'));
+    const board1 = new Board(9, 9);
+    const lines = board1.lines;
+    const cases = board1.cases;
+    for (i=0; i<=lines; i++){
+        $('table').append($('<tr>'));
     };
-    //Ajout du P2 dans le tableau, en vérifiant sa proximité avec P1
-    //Ajout du P2 dans le tableau, en vérifiant sa proximité avec P1
-     while(arr.length<=15){//On limite la taille du tableau 
-         melt();
-         if(!arr.includes(aGriser)){//Si la valeur reçue de melt n'est pas déjà dans le tableau, on l'ajoute
-             //Si cette valeur n'est pas trop proche de la précédente
-             check(aGriser, arr[14]);
-             //check insère aGriser si sa valeur passe toutes les vérifications
-        }; 
-    };*/
-    //********************************FIN DE MISE EN ATTENTE******************************
-
-    //Première version d'une boucle pour le placement avec vérification des positions
-    //Piste de boucle imbriquée pour la fonction check
-
-       
-
- /*   
-i= 1;
-while(i<14){ //Toutes les valeurs de 0 à 15 
-    j=0;
-    blablabla;
-    while(j<i){//Vérifie une valeur avant de l'ajouter dans le tableau
-        j++;
-    }
-    i++;
-};*/
-       
-        //console.log("Arr = " + arr);
-        let arrIndex = 0;
-        //arr[arrIndex] permet de faire correspondre l'index du plateau (arr) avec la valeur d'une boucle de 16 tours utilisée ensuite (arrIndex)
-        for(i=0; i<= 15; i++){
-            if (arrIndex<= 9){//Fera donc 10 tours en changeant le css en grey
-                addImage(arr[arrIndex], occupe.avatar, occupe.classe);
-                arrIndex ++;//On augmente la valeur d'arrIndex à chaque fois, pour ne pas repasser sur la même case
-            } else if (arrIndex>9 && arrIndex <= 13 ){//4 tours avec les armes
-                //Switch sur les index concernés pour attribuer une arme différente à chaque fois
-                switch(arrIndex){
-                    case 10:
-                        addImage(arr[arrIndex], w1.avatar, w1.classe);
-                        arrIndex++;
-                        break;
-                    case 11 :
-                        addImage(arr[arrIndex], w2.avatar, w2.classe);
-                        arrIndex++;
-                        break;
-                    case  12:
-                        addImage(arr[arrIndex], w3.avatar, w3.classe);
-                        arrIndex++;
-                        break;
-                    case 13 :
-                        addImage(arr[arrIndex], w4.avatar, w4.classe);
-                        arrIndex++;
-                        break;
-                    default:
-                        arrIndex++;             
-                };
-            } else if (arrIndex == 14) {//1 tour pour le perso1
-                addImage(arr[arrIndex], perso1.avatar, perso1.classe);
-                arrIndex ++;
-            } else if (arrIndex == 15) {//1 dernier tour pour le perso2
-                addImage(arr[arrIndex], perso2.avatar, perso2.classe);
-            };
+    $('tr').each(function(){
+        for (i=0; i<=cases; i++){
+            $(this).append($('<td class="free">'));
         };
-        refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
-        possible(perso1.position);//Ne pas retirer, permet de lancer la fonction possible dès le début du jeu
-    return inFight;
+    });
+   
+    //Lancement du positionnement de tous les éléments (cases occupées, armes et persos)
+    let free = document.querySelectorAll(".free");//Renvoie un array de toutes les cases .free
+    function melt (){
+        return (Math.floor(Math.random()*free.length));
+    };
+    //Création d'un array pour stocker les valeurs renvoyées par la fonction melt
+    let arr = [];
+    
+    function aGriserEstElleOk(value1, value2){
+        let arrToCheck = [value2 -11,  value2 -10,  value2 -9,  value2 -1, value2, value2 +1,  value2 +9,  value2 +10,  value2 +11];
+        if (arrToCheck.includes(value1)) {
+            return false;
+        }
+        return true;
+    };  
+
+    i = 0;
+    while (i < 16) {
+        let aGriser = melt();
+        j = 0;
+        while ( j < arr.length ){
+            if(aGriserEstElleOk(aGriser, arr[j]) == true){
+                j ++;
+            } else { 
+                break;
+            };   
+        };
+        if (j == arr.length){
+            arr.push(aGriser);
+            i++;
+        }
+    };
+
+    let arrIndex = 0;
+    //arr[arrIndex] permet de faire correspondre l'index du plateau (arr) avec la valeur d'une boucle de 16 tours utilisée ensuite (arrIndex)
+    for(i=0; i<= 15; i++){
+        if (arrIndex < 10){//Fera donc 10 tours en changeant le css en grey
+            addImage(arr[arrIndex], occupe.avatar, occupe.classe);
+            arrIndex ++;//On augmente la valeur d'arrIndex à chaque fois, pour ne pas repasser sur la même case
+        } else if (arrIndex > 9 && arrIndex < 16 ){//4 tours avec les armes
+        //Switch sur les index concernés pour attribuer une arme différente à chaque fois
+            switch(arrIndex){
+                case 10:
+                    addImage(arr[arrIndex], w1.avatar, w1.classe);
+                    arrIndex++;
+                    break;
+                case 11 :
+                    addImage(arr[arrIndex], w2.avatar, w2.classe);
+                    arrIndex++;
+                    break;
+                case 12:
+                    addImage(arr[arrIndex], w3.avatar, w3.classe);
+                    arrIndex++;
+                    break;
+                case 13 :
+                    addImage(arr[arrIndex], w4.avatar, w4.classe);
+                    arrIndex++;
+                    break;
+                case 14 :
+                    addImage(arr[arrIndex], perso1.avatar, perso1.classe);
+                    arrIndex ++;
+                    break;
+                case 15 :
+                    addImage(arr[arrIndex], perso2.avatar, perso2.classe);
+                default:
+                    arrIndex ++;
+            };
+        } 
+    };
+    refreshPos();//Permet de définir les positions des deux joueurs en fonciton des cases ayant les classes .P1 et .P2
+    possible(perso1.position);//Ne pas retirer, permet de lancer la fonction possible dès le début du jeu
+    //return inFight;
 });//Ne pas retirer, fin de la fonction de création du plateau
     
-//**************************************DEPLACEMENT + INDICATION DE CASES POSSIBLES***********************************
+//**************************************DEPLACEMENT + INDICATION DES CASES POSSIBLES***********************************
+//Fonction de vérification des cases 
+//Si la case concernée n'est pas grisée, on lui ajoute la classe "possible".
+function checkNext(position){
+    if((!$('td').eq(position).hasClass("occuped"))){
+        $('td').eq(position).addClass("possible");
+    };
+};
 //Fonction de coloration des cases de déplacement possible
 function possible(position){
     $('td').removeClass("possible");//On retire toutes les cases colorées
     //Essai d'une fonction pour regrouper toutes les suivantes
     function checkPossible(array, pos1, pos2, pos3){
-        if((array.indexOf(position) == -1) &&//Si la position du joueur n'est pas une bordure basse
-            (moves < 3)//Et si les mouvements sont à 0
-        ){
+        if((array.indexOf(position) == -1) && (moves < 3)){//Si la position du joueur n'est pas une bordure basse et si les mouvements sont à 0
             checkNext(position + pos1);//On envoie sur la case suivante vers le bas la classe possible.
-            if (!$('td').eq(position + pos1).hasClass("occuped")&&//Même opération avec les cases suivantes, en modifiant les valeurs
-                (array.indexOf(position + pos1) == -1) &&
-                (moves < 2)
-            ){
+            if (!$('td').eq(position + pos1).hasClass("occuped") && (array.indexOf(position + pos1) == -1) && (moves < 2)){//Même opération avec les cases suivantes, en modifiant les valeurs
                 checkNext(position + pos2);
-                if (!$('td').eq(position + pos2).hasClass("occuped")&&
-                    (array.indexOf(position + pos2) == -1) &&
-                    (moves < 1)
-                ){
+                if (!$('td').eq(position + pos2).hasClass("occuped") && (array.indexOf(position + pos2) == -1) && (moves < 1)){
                     checkNext(position + pos3);
                 };
             };
@@ -548,71 +465,64 @@ function possible(position){
     checkPossible(arrayRight, +1, +2, +3);
 };
     
-function checkNext(position){
-    if((!$('td').eq(position).hasClass("occuped"))){
-        $('td').eq(position).addClass("possible");
-    };
-};
 
+//Fonction appelée par l'appui sur "tour suivant".
+function stopPlay(perso){
+    moves = 0;//On remet les mouvements à 0
+    tour++;//On incrémente les tours
+    $('.stopP1, .stopP2').empty();//On masque les boutons de passage au tour suivant
+    possible(perso.position);//On affiche les cases possibles pour le joueur suivant
+};
 
 //Création d'un booleen pour bloquer le déplacement si oin passe en combat
 let p1Play;
 //Fonction de déplacement
-    $(document).keydown(function(e){
-        if (inFight == false){
-            dir = e.which;
-            if (tour%2 == 0){
-                p1Play = true;
+$(document).keydown(function(e){
+    if (inFight == false){
+        dir = e.which;
+        if (tour%2 == 0){
+            p1Play = true;
+            possible(perso1.position);
+            if( moves < 4){
+                $('.stopP1, .stopP2').empty();
+                $('.stopP1').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP1" action="#">'));
+                perso1.move(perso1);
                 possible(perso1.position);
-                if( moves < 4){
-                    $('.stopP1, .stopP2').empty();
-                    $('.stopP1').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP1" action="#">'));
-                    perso1.move(perso1);
-                    possible(perso1.position);
-                    $('#buttonStopP1').click(function(e){
-                        moves = 0;
-                        tour++;
-                        $('.stopP1, .stopP2').empty();
-                        possible(perso2.position);
-                        return moves;
-                    });
-                };
-            } else {
-                p1Play = false;
+                $('#buttonStopP1').click(function(e){
+                    stopPlay(perso2);
+                });
+            };
+        } else {
+            p1Play = false;
+            possible(perso2.position);
+            if( moves < 4){
+                $('.stopP1, .stopP2').empty();
+                $('.stopP2').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP2" action="#">'));
+                perso2.move(perso2);
                 possible(perso2.position);
-                if( moves < 4){
-                    $('.stopP1, .stopP2').empty();
-                    $('.stopP2').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP2" action="#">'));
-                    perso2.move(perso2);
-                    possible(perso2.position);
-                    $('#buttonStopP2').click(function(e){
-                        moves = 0;
-                        tour++;
-                        $('.stopP1, .stopP2').empty();
-                        possible(perso1.position);
-                        return moves;
-                    });
-                }
+                $('#buttonStopP2').click(function(e){
+                    stopPlay(perso1);
+                });
             }
-            //Tant que moves n'a pas atteint 3, on ne passe pas au tour suivant. 
-            //Cela permet de limiter les déplacements.
-            if(moves == 3){
-                tour ++;
-                moves = 0;
-                if (tour%2 == 0){
-                    possible(perso1.position);
-                    $('.stopP2').empty();
-                } else {
-                    possible(perso2.position);
-                    $('.stopP1').empty();
-                }
-            }; 
-        return p1Play;
-        };
-    });
-    //*****************************************GESTION DES COMBATS **********************************
-//Essais de fonctions pour désactiver les boutons de combat au tour par tour
-    //A factoriser
+        }
+        //Tant que moves n'a pas atteint 3, on ne passe pas au tour suivant. 
+        //Cela permet de limiter les déplacements.
+        if(moves == 3){
+            tour ++;
+            moves = 0;
+            if (tour%2 == 0){
+                possible(perso1.position);
+                $('.stopP2').empty();
+            } else {
+                possible(perso2.position);
+                $('.stopP1').empty();
+            }
+        }; 
+    };
+});
+
+//*****************************************GESTION DES COMBATS **********************************
+//Désactivation des boutons de combat au tour par tour
 function disableP1(){
     $('.attackP1, .defendP1').hide();
     $('.attackP2, .defendP2').show();
@@ -636,46 +546,39 @@ $('#showFightRing').click(function(e){
 });
     
 //Ecoute des boutons P1
-    $('.attackP1').click(function(e){
-        p1Play = false;
-        perso1.attaque(perso1, perso2);
-        perso2.hasShield = false;
-        disableP1();
-    });
-    $('.defendP1').click(function(e){
-        p1Play = false;
-        disableP1();
-        perso1.hasShield = true;
-    });
-    //Ecoute des boutons P2
-    $('.attackP2').click(function(e){
-        p1Play = true;
-        perso2.attaque(perso2, perso1);
-        perso1.hasShield = false;
-        disableP2();
-    });
-    $('.defendP2').click(function(e){
-        disableP2();
-        p1Play = true;
-        perso2.hasShield = true;
-    });
+$('.attackP1').click(function(e){
+    p1Play = false;
+    perso1.attaque(perso1, perso2);
+    perso2.hasShield = false;
+    disableP1();
+});
+$('.defendP1').click(function(e){
+    p1Play = false;
+    disableP1();
+    perso1.hasShield = true;
+});
+//Ecoute des boutons P2
+$('.attackP2').click(function(e){
+    p1Play = true;
+    perso2.attaque(perso2, perso1);
+    perso1.hasShield = false;
+    disableP2();
+});
+$('.defendP2').click(function(e){
+    disableP2();
+    p1Play = true;
+    perso2.hasShield = true;
+});
     
-
-
-
 //*****************************GESTION DU CLIC SUR RELOAD************************************************
 $('#reload').click(function(){
-    $(document).on('keydown');
     perso1.newRound(perso1);
     perso2.newRound(perso2);
     tour = 0;
     moves = 0;
     $('.stopP1, .stopP2').empty();
     $('#masque, #reload').hide();
-    //$("td, tr, table").remove();
     $('#explain, #showFightRing, .title').show();
 });
 
-
-  
 });//Ne pas retirer, fin de la fonction de chargement du DOM

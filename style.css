@@ -3,15 +3,14 @@ body{
 }
 /*Fenêtre de combat avec opacité de fond pour masquer le plateau*/
 #rulesBox, #masque{
-    position: fixed;
+    position: absolute;
     top:0px;
     left:0px;  
     width: 100%; 
-    height:100%;  
+    height:200%;  
     z-index: 1000;
     background-color: rgba(0,0,0,0.7);
 }
-
 
 #masque{
     display : none;
@@ -19,7 +18,7 @@ body{
 
 #fight-container, #rules{
     background-color: white;
-    margin: 100px ;
+    margin: 25px 100px ;
     text-align: center;
     padding: 20px;
 }
@@ -46,7 +45,7 @@ body{
     margin-top: 20px;
 }
 #game{
-    margin-top: 35px;
+    margin-top: 25px;
 }
 #game, .flexPerso1, .flexPerso2, #fightRing{
     display: flex;

@@ -1,6 +1,7 @@
 body{
     font-family: gadugi;
 }
+/***********PARTIE COMBATS***********/
 /*Fenêtre de combat avec opacité de fond pour masquer le plateau*/
 #rulesBox, #masque{
     position: absolute;
@@ -40,10 +41,11 @@ body{
 .attackP1, .attackP2, .defendP1, .defendP2{
     margin-bottom: 10px;
 }
-
+/*Bouton de placement*/
 #place{
     margin-top: 20px;
 }
+/************ELEMENTS GENERAUX********************/
 #game{
     margin-top: 25px;
 }
@@ -103,12 +105,12 @@ ul{
 .possible{
     background-color: palegoldenrod;
 }
-
+/*Boutons de fin de combat*/
 #stopP1, #stopP2{
     display: block;
     margin: 0 auto;
 }
-/*Ajout des classes pour lacher les armes*/
+/*Ajout des classes pour les armes lachées*/
 .W1{
     background-image: url(images/epeeSmall.png);
     background-repeat: no-repeat;

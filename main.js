@@ -1,14 +1,14 @@
 $(function(){//Appel jQuery
 //******************DECLARATION DES VARIABLES*******************************
 //Préparation des persos et armes
-let arrayUp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],//Bordure haute
-    arrayLeft = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90],//Bordure gauche
-    arrayDown = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99],//Bordure basse
-    arrayRight = [9,19, 29, 39, 49, 59, 69, 79, 89, 99],//Bordure droite
-    tour = 0,//Permet de choisir le joueur dont c'est le tour
+const arrayUp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],//Bordure haute
+      arrayLeft = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90],//Bordure gauche
+      arrayDown = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99],//Bordure basse
+      arrayRight = [9,19, 29, 39, 49, 59, 69, 79, 89, 99];//Bordure droite
+let tour = 0,//Permet de choisir le joueur dont c'est le tour
     moves = 0,
     inFight = false,//permet de bloquer les touches si on entre en phase de combat
-    dir;
+    dir;//Récupèrera la touche pressée au clavier
 //*****************DECLARATION DES OBJETS, CLASSES ET METHODES******************
 class Perso {//Création d'une classe personnage
     //Constructeur
@@ -40,7 +40,7 @@ class Perso {//Création d'une classe personnage
     };
     //Méthode d'attaque
     attaque(attaquant, cible){
-        function die(cible){
+        function die(cible){//Fonction de mort du perso si les dégâts subis dépassent les hp
             cible.hasShield = false;
             cible.hp = 0;
             cible.alive = false;
@@ -99,13 +99,13 @@ class Perso {//Création d'une classe personnage
             return inFight;
         };
         //Préparation des fonctions up et down
-        let droite  = +1;
-        let gauche = -1;
-        let haut = -10;
-        let bas = +10; 
+        const droite  = +1,
+              gauche = -1,
+              haut = -10,
+              bas = +10; 
         function movePlayer(value){
             if ((!$('td').eq(perso.position + value).hasClass("occuped")) && //Si on ne cherche pas à atteindre une case grise
-                    (!$('td').eq(perso.position + value).hasClass("P1")) &&
+                    (!$('td').eq(perso.position + value).hasClass("P1")) &&//Et si on n'essaie pas d'aller SUR un perso
                     (!$('td').eq(perso.position + value).hasClass("P2")) 
                 ){
                     remove(perso.position, perso.classe);//Retire l'image avec la fonction remove()
@@ -326,7 +326,7 @@ $('#place, #reload').click(function(e){
         $('table').append($('<tr>'));
     };
     $('tr').each(function(){
-        for (i=0; i<=cases; i++){//Ajout sur chaque case de la case avec classe free
+        for (i=0; i<=cases; i++){//Ajout sur chaque case de la classe free
             $(this).append($('<td class="free">'));
         };
     });
@@ -489,7 +489,7 @@ function disableP2(){
     $('.attackP2, .defendP2').hide();
     $('.attackP1, .defendP1').show();
 };
-// Laisser le premier coup à l'attaquant
+// Lancement du combat au clic sur "on y va"
 $('#showFightRing').click(function(e){
     $('#explain, #showFightRing').hide();//On cache les explications et le bouton de lancement de combat
     $('#fightRing').fadeIn();//Apparition des éléments de combat

@@ -2,7 +2,6 @@ import Perso from './perso.js';
 import Arme from './arme.js';
 import Board from './board.js';
 import Occuped from './occuped.js';
-$(function(){//Appel jQuery
 
 //******************DECLARATION DES VARIABLES*******************************
 //Préparation des persos et armes
@@ -14,20 +13,17 @@ let tour = 0,//Permet de choisir le joueur dont c'est le tour
     moves = 0,
     inFight = false,//permet de bloquer les touches si on entre en phase de combat
     dir;//Récupèrera la touche pressée au clavier
-//*****************DECLARATION DES OBJETS, CLASSES ET METHODES******************
-
-
 
 //Création des personnages
-perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", "", "P1", false, "", "", false, true);
-perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.png", "", "P2", false, "", "", false, true);
+const perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", "", "P1", false, "", "", false, true);
+const perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.png", "", "P2", false, "", "", false, true);
 //Création des armes
-w1 = new Arme("Epée", 20, "images/epeeSmall.png" , "", "W1");
-w2 = new Arme("Hache", 30, "images/hacheSmall.png" , "", "W2");
-w3 = new Arme("Lance", 25, "images/lanceSmall.png" , "", "W3");
-w4 = new Arme("Fléau", 25, "images/fleauSmall.png" , "", "W4");
+const w1 = new Arme("Epée", 20, "images/epeeSmall.png" , "", "W1");
+const w2 = new Arme("Hache", 30, "images/hacheSmall.png" , "", "W2");
+const w3 = new Arme("Lance", 25, "images/lanceSmall.png" , "", "W3");
+const w4 = new Arme("Fléau", 25, "images/fleauSmall.png" , "", "W4");
 //Création des blocs occupés
-occupe = new Occuped("images/grisSmall.jpg", "occuped");
+let occupe = new Occuped("images/grisSmall.jpg", "occuped");
 
 //*******************************************FONCTIONS DE RAFRAICHISSEMENT DES INFOS HTML*************************************
 //Animation d'apparition/disparition de la modale de combat
@@ -79,7 +75,6 @@ function refresh(){
     refreshP1();
     refreshP2();
 };
-
 
 //*******************************************FONCTIONS UTILISEES POUR LES DEPLACEMENTS****************************************
 //Ajout de l'image
@@ -157,11 +152,11 @@ $('#place, #reload').click(function(e){
     const board1 = new Board(9, 9);
     const lines = board1.lines;
     const cases = board1.cases;
-    for (i=0; i<=lines; i++){//Ajout des lignes
+    for (let i=0; i<=lines; i++){//Ajout des lignes
         $('table').append($('<tr>'));
     };
     $('tr').each(function(){
-        for (i=0; i<=cases; i++){//Ajout sur chaque case de la classe free
+        for (let i=0; i<=cases; i++){//Ajout sur chaque case de la classe free
             $(this).append($('<td class="free">'));
         };
     });
@@ -181,10 +176,10 @@ $('#place, #reload').click(function(e){
         return true;//Sinon, on envoie value 1.
     };  
     //Application de cette fonction sur toutes les valeurs du tableau
-    i = 0;
+    let i = 0;
     while (i < 16) {
         let aGriser = melt();//On récupère une valeur
-        j = 0;
+        let j = 0;
         while ( j < arr.length ){//Tant que j ne vaut pas la taille du tableau
             if(aGriserEstElleOk(aGriser, arr[j]) == true){//On compare la nouvelle valeur avec sa précédente dans le tableau
                 j ++;//Si c'est OK, on augmente j pour passer à l'index suivant 
@@ -261,6 +256,16 @@ function possible(position){
     checkPossible(arrayLeft, -1, -2, -3);
     checkPossible(arrayRight, +1, +2, +3);
 };
+function checkFight(value1, value2){
+            let arrFight = [value2 + 10, value2-10, value2+1, value2-1];//Préparation d'un tableau des cases proches
+            if (arrFight.includes(value1)//Si la position du perso est dans ce tableau
+            ){
+                inFight = true;//Permet de bloquer les déplacements lors d'un combat
+                $('#masque').fadeIn();
+                $('#fightRing').hide();
+            }
+            return inFight;
+        };
 //Fonction appelée par l'appui sur "tour suivant".
 function stopPlay(perso){
     moves = 0;//On remet les mouvements à 0
@@ -273,43 +278,51 @@ let p1Play;//Création d'un booleen pour définir la priorité en combat
 //Fonction de déplacement
 $(document).keydown(function(e){
     if (inFight == false){//Si on n'est pas en combat
-        dir = e.which;//On récupère la valeur de la touche saisie
-        if (tour%2 == 0){//Si tour est pair, joueur1 joue
-            p1Play = true;//Joueur1 aura la priorité en combat
-            possible(perso1.position);//On ajoute les cases possibles
-            if( moves < 4){
-                $('.stopP1, .stopP2').empty();//Evite que les boutons ne s'accumulent à chaque appui sur une touche.On vide les containers à chaque appui.
-                $('.stopP1').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP1" action="#">'));//Ajout du bouton de fin de tour
-                perso1.move(perso1);//Appel du déplacement du joueur
-                possible(perso1.position);//Ajout des nouvelles cases possibles
-                $('#buttonStopP1').click(function(e){//Gestion du clic sur stop
-                    stopPlay(perso2);
-                });
-            };
-        } else {
-            p1Play = false;//Quand false, joueur2 a la priorité au combat.
-            possible(perso2.position);
-            if( moves < 4){
-                $('.stopP1, .stopP2').empty();
-                $('.stopP2').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP2" action="#">'));
-                perso2.move(perso2);
-                possible(perso2.position);
-                $('#buttonStopP2').click(function(e){
-                    stopPlay(perso1);
-                });
-            }
-        }
-        if(moves == 3){//Ajout des animations lorsque moves vaut 3. Permet d'afficher précisément les cases possibles et le bouton stop au moment du passage au prochain tour.
-            tour ++;//Par contre, quand c'est le cas, on incrémente tour
-            moves = 0;//Et on remet moves à 0 pour le prochain tour
-            if (tour%2 == 0){
-                possible(perso1.position);
-               $('.stopP2').empty();
+        let dir = e.which;//On récupère la valeur de la touche saisie
+        if (dir == 37 || dir == 38 || dir == 39 || dir == 40){//Evite que la saisie du nom ne soit prise en compte pour la fonction possible()
+            if (tour%2 == 0){//Si tour est pair, joueur1 joue
+                p1Play = true;//Joueur1 aura la priorité en combat
+                possible(perso1.position);//On ajoute les cases possibles
+                if( moves < 4){
+                    $('.stopP1, .stopP2').empty();//Evite que les boutons ne s'accumulent à chaque appui sur une touche.On vide les containers à chaque appui.
+                    $('.stopP1').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP1" action="#">'));//Ajout du bouton de fin de tour
+                    perso1.move(perso1, dir);//Appel du déplacement du joueur
+                    refreshPos();
+                    checkFight(perso1.position, perso2.position);
+                    moves ++;
+                    possible(perso1.position);//Ajout des nouvelles cases possibles
+                    $('#buttonStopP1').click(function(e){//Gestion du clic sur stop
+                        stopPlay(perso2);
+                    });
+                };
             } else {
+                p1Play = false;//Quand false, joueur2 a la priorité au combat.
                 possible(perso2.position);
-                $('.stopP1').empty();
+                if( moves < 4){
+                    $('.stopP1, .stopP2').empty();
+                    $('.stopP2').append($('<br/><input type="button" value="Fin du tour" id="buttonStopP2" action="#">'));
+                    perso2.move(perso2, dir);
+                    refreshPos();
+                    checkFight(perso1.position, perso2.position);
+                    moves ++;
+                    possible(perso2.position);
+                    $('#buttonStopP2').click(function(e){
+                        stopPlay(perso1);
+                    });
+                }
             }
-        }; 
+            if(moves == 3){//Ajout des animations lorsque moves vaut 3. Permet d'afficher précisément les cases possibles et le bouton stop au moment du passage au prochain tour.
+                tour ++;//Par contre, quand c'est le cas, on incrémente tour
+                moves = 0;//Et on remet moves à 0 pour le prochain tour
+                if (tour%2 == 0){
+                    possible(perso1.position);
+                   $('.stopP2').empty();
+                } else {
+                    possible(perso2.position);
+                    $('.stopP1').empty();
+                }
+            }; 
+        };
     };
 });
 
@@ -339,6 +352,7 @@ $('#showFightRing').click(function(e){
 $('.attackP1').click(function(e){
     p1Play = false;//Permet l'affichage ou non des boutons de combat
     perso1.attaque(perso1, perso2);//Attaque
+    refresh();
     disableP1();//On masque joueur1
 });
 $('.defendP1').click(function(e){
@@ -350,6 +364,7 @@ $('.defendP1').click(function(e){
 $('.attackP2').click(function(e){
     p1Play = true;
     perso2.attaque(perso2, perso1);
+    refresh();
     disableP2();
 });
 $('.defendP2').click(function(e){
@@ -357,5 +372,3 @@ $('.defendP2').click(function(e){
     p1Play = true;
     perso2.hasShield = true;
 });
-    
-});//Ne pas retirer, fin de l'appel jQuery

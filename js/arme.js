@@ -1,4 +1,4 @@
-export class Arme {
+export default class Arme {
     //Constructeur
     constructor(nom, degats, avatar, position, classe){
         this.nom = nom;

@@ -1,4 +1,4 @@
-export class Board{
+export default class Board{
     //Constructeur
     constructor(lines, cases){
     this.lines = lines;

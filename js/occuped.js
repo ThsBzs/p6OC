@@ -1,4 +1,4 @@
-export class Occuped{
+export default class Occuped{
     //Constructeur
     constructor(avatar, classe, position){
         this.avatar = avatar;

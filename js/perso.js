@@ -1,4 +1,4 @@
-export class Perso {//Création d'une classe personnage
+export default class Perso {//Création d'une classe personnage
     //Constructeur
     constructor(nom, hp, degats, arme, score, avatar, position, classe, hasWeapon, weaponClass, weaponAvatar, hasShield, alive){
         this.nom = nom;
@@ -33,12 +33,11 @@ export class Perso {//Création d'une classe personnage
             cible.hp = 0;
             cible.alive = false;
             attaquant.score ++;
-            refresh();
         }
         if (cible.hasShield == false) {//Si le bouclier n'est pas utilisé, dégâts 100%
             if((cible.hp - attaquant.degats) > 0 ){//Si les dégâts infligés ne diminuent pas la vie en-dessous de 0
                 cible.hp -= attaquant.degats;//On inflige les dégâts
-                refresh();//Rafraîchissement des deux persos
+                
             } else if ((cible.hp - attaquant.degats) <= 0 ){//Si les dégâts font basculer en négatif
                 die(cible);
             }
@@ -46,7 +45,7 @@ export class Perso {//Création d'une classe personnage
             if((cible.hp - (attaquant.degats / 2)) > 0 ){
                 cible.hp -= (attaquant.degats / 2); 
                 cible.hasShield == false;
-                refresh();
+                
             } else if ((cible.hp - (attaquant.degats / 2)) <= 0 ){
                 die(cible);
             }
@@ -75,22 +74,20 @@ export class Perso {//Création d'une classe personnage
     };
     
 //Méthode de déplacement n'utilisant pas de paramètre 
-    move(perso){
+    move(perso, dir){
+        const arrayUp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],//Bordure haute
+              arrayLeft = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90],//Bordure gauche
+              arrayDown = [90, 91, 92, 93, 94, 95, 96, 97, 98, 99],//Bordure basse
+              arrayRight = [9,19, 29, 39, 49, 59, 69, 79, 89, 99];//Bordure droite   
+
         //Suppression du css pour retirer l'image
         function remove(position, classe){
             $("td").eq(position).removeAttr("style").removeClass(classe).addClass("free");
         };
-        //Fonction pour basculer en combat
-        function checkFight(value1, value2){
-            let arrFight = [value2 + 10, value2-10, value2+1, value2-1];//Préparation d'un tableau des cases proches
-            if (arrFight.includes(value1)//Si la position du perso est dans ce tableau
-            ){
-                inFight = true;//Permet de bloquer les déplacements lors d'un combat
-                $('#masque').fadeIn();
-                $('#fightRing').hide();
-            }
-            return inFight;
+        function addImage(position, avatar, classe){
+            $("td").eq(position).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
         };
+        
         //Préparation des fonctions up et down
         const droite  = +1,
               gauche = -1,
@@ -104,9 +101,6 @@ export class Perso {//Création d'une classe personnage
                     remove(perso.position, perso.classe);//Retire l'image avec la fonction remove()
                     perso.position = perso.position + value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
                     addImage(perso.position, perso.avatar, perso.classe);//Ajoute, via la fonction addImage, le CSS.
-                    refreshPos();//Met à jour le tableau des positions.
-                    checkFight(perso1.position, perso2.position);//Vérifie si les deux persos sont côte-à-côte
-                    moves ++;
                 };
         };
         switch(dir){
@@ -130,8 +124,6 @@ export class Perso {//Création d'une classe personnage
                     movePlayer(bas);
                 };
             break;
-            default:
-                refreshPos();
-            }  
-        };
+        }  
+    };
 };

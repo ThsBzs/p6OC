@@ -1,4 +1,9 @@
+import Perso from './perso.js';
+import Arme from './arme.js';
+import Board from './board.js';
+import Occuped from './occuped.js';
 $(function(){//Appel jQuery
+
 //******************DECLARATION DES VARIABLES*******************************
 //Préparation des persos et armes
 const arrayUp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],//Bordure haute
@@ -10,179 +15,17 @@ let tour = 0,//Permet de choisir le joueur dont c'est le tour
     inFight = false,//permet de bloquer les touches si on entre en phase de combat
     dir;//Récupèrera la touche pressée au clavier
 //*****************DECLARATION DES OBJETS, CLASSES ET METHODES******************
-class Perso {//Création d'une classe personnage
-    //Constructeur
-    constructor(nom, hp, degats, arme, score, avatar, position, classe, hasWeapon, weaponClass, weaponAvatar, hasShield, alive){
-        this.nom = nom;
-        this.hp = hp;
-        this.degats = degats;
-        this.arme = arme;
-        this.score = score;
-        this.avatar = avatar;
-        this.position = position;
-        this.classe = classe;
-        this.hasWeapon = hasWeapon;
-        this.weaponClass = weaponClass;
-        this.weaponAvatar = weaponAvatar;
-        this.hasShield = hasShield;
-        this.alive = alive;
-    }
-    //Méthode de mise à jour à la fin d'une partie
-    newRound(){
-        this.alive = true;
-        this.hp = 100;
-        this.degats = 10;
-        this.arme = "Aucune";
-        this.hasWeapon = false;
-        this.weaponClass = "";
-        this.weaponAvatar = "";
-        this.hasShield = false;
-    };
-    //Méthode d'attaque
-    attaque(attaquant, cible){
-        function die(cible){//Fonction de mort du perso si les dégâts subis dépassent les hp
-            cible.hasShield = false;
-            cible.hp = 0;
-            cible.alive = false;
-            attaquant.score ++;
-            refresh();
-        }
-        if (cible.hasShield == false) {//Si le bouclier n'est pas utilisé, dégâts 100%
-            if((cible.hp - attaquant.degats) > 0 ){//Si les dégâts infligés ne diminuent pas la vie en-dessous de 0
-                cible.hp -= attaquant.degats;//On inflige les dégâts
-                refresh();//Rafraîchissement des deux persos
-            } else if ((cible.hp - attaquant.degats) <= 0 ){//Si les dégâts font basculer en négatif
-                die(cible);
-            }
-        } else {//Si le bouclier est utilisé, on divise les dégâts reçus par 2
-            if((cible.hp - (attaquant.degats / 2)) > 0 ){
-                cible.hp -= (attaquant.degats / 2); 
-                cible.hasShield == false;
-                refresh();
-            } else if ((cible.hp - (attaquant.degats / 2)) <= 0 ){
-                die(cible);
-            }
-        };
-        cible.hasShield = false;//Après l'attaque, on retire le bouclier
-    };
-    //Méthode de récupération d'arme
-    addWeapon(weapon, classe){
-    if(this.position == weapon.position){
-        //On vérifie si le joueur avait une arme. Si oui, on dépose l'ancienne sur le plateau.
-        if(this.hasWeapon == true){
-            $('td').eq(this.position).addClass(this.weaponClass).removeClass("free");
-        };
-        //On réinitialise les dégâts de base
-        this.degats = 10;
-        //On ajoute les infos de l'arme au perso
-        this.arme = weapon.nom;
-        this.degats += weapon.degats;
-        this.weaponClass = weapon.classe;
-        this.weaponAvatar = weapon.avatar;
-        //On retire l'arme de la case 
-        $('td').eq(weapon.position).removeClass(classe);
-        //On met à jour le hasWeapon sur vrai
-        this.hasWeapon = true;
-    };
-};
-    //Méthode de déplacement n'utilisant pas de paramètre 
-    move(perso){
-        //Fonction pour basculer en combat
-        function checkFight(value1, value2){
-            let arrFight = [value2 + 10, value2-10, value2+1, value2-1];//Préparation d'un tableau des cases proches
-            if (arrFight.includes(value1)//Si la position du perso est dans ce tableau
-            ){
-                inFight = true;//Permet de bloquer les déplacements lors d'un combat
-                $('#masque').fadeIn();
-                $('#fightRing').hide();
-            }
-            return inFight;
-        };
-        //Préparation des fonctions up et down
-        const droite  = +1,
-              gauche = -1,
-              haut = -10,
-              bas = +10; 
-        function movePlayer(value){
-            if ((!$('td').eq(perso.position + value).hasClass("occuped")) && //Si on ne cherche pas à atteindre une case grise
-                    (!$('td').eq(perso.position + value).hasClass("P1")) &&//Et si on n'essaie pas d'aller SUR un perso
-                    (!$('td').eq(perso.position + value).hasClass("P2")) 
-                ){
-                    remove(perso.position, perso.classe);//Retire l'image avec la fonction remove()
-                    perso.position = perso.position + value;//Met à jour la position en lui donnant en valeur celle passée en paramètre +1
-                    addImage(perso.position, perso.avatar, perso.classe);//Ajoute, via la fonction addImage, le CSS.
-                    refreshPos();//Met à jour le tableau des positions.
-                    checkFight(perso1.position, perso2.position);//Vérifie si les deux persos sont côte-à-côte
-                    moves ++;
-                };
-        };
-        switch(dir){
-            case 39 : //Droite
-                if (arrayRight.indexOf(this.position) == -1){//Si la position actuelle n'est pas une bordure droite 
-                    movePlayer(droite);//on peut se déplacer vers la droite
-                };
-                break;
-            case 37 ://Gauche
-                if (arrayLeft.indexOf(this.position) == -1){
-                    movePlayer(gauche);
-                };
-            break;
-            case 38 ://Haut
-                if (arrayUp.indexOf(this.position) == -1) {
-                    movePlayer(haut)  
-                };
-            break;
-            case 40 ://Bas
-                if (arrayDown.indexOf(this.position) == -1){
-                    movePlayer(bas);
-                };
-            break;
-            default:
-                refreshPos();
-            }  
-        };
-    };
 
-//Création d'une classe arme
-class Arme {
-    //Constructeur
-    constructor(nom, degats, avatar, position, classe){
-        this.nom = nom;
-        this.degats = degats;
-        this.avatar = avatar;
-        this.position = position;
-        this.classe = classe;
-    }
-};
-    
-//Création d'une classe de bloc occupé
-class Occuped{
-    //Constructeur
-    constructor(avatar, classe, position){
-        this.avatar = avatar;
-        this.classe = classe;
-        this.position = position;
-    }
-};
-    
-//Création d'une classe pour le tableau
-class Board{
-    //Constructeur
-    constructor(lines, cases){
-    this.lines = lines;
-    this.cases = cases;
-    }
-};
+
 
 //Création des personnages
-let arrayPos = [];
-perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", arrayPos[0], "P1", false, "", "", false, true);
-perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.png", arrayPos[1], "P2", false, "", "", false, true);
+perso1 = new Perso("", 100, 10, "Aucune", 0, "images/minionSmall.png", "", "P1", false, "", "", false, true);
+perso2 = new Perso("", 100, 10, "Aucune", 0, "images/lapinSmall.png", "", "P2", false, "", "", false, true);
 //Création des armes
-w1 = new Arme("Epée", 20, "images/epeeSmall.png" , arrayPos[2], "W1");
-w2 = new Arme("Hache", 30, "images/hacheSmall.png" , arrayPos[3], "W2");
-w3 = new Arme("Lance", 25, "images/lanceSmall.png" , arrayPos[4], "W3");
-w4 = new Arme("Fléau", 25, "images/fleauSmall.png" , arrayPos[5], "W4");
+w1 = new Arme("Epée", 20, "images/epeeSmall.png" , "", "W1");
+w2 = new Arme("Hache", 30, "images/hacheSmall.png" , "", "W2");
+w3 = new Arme("Lance", 25, "images/lanceSmall.png" , "", "W3");
+w4 = new Arme("Fléau", 25, "images/fleauSmall.png" , "", "W4");
 //Création des blocs occupés
 occupe = new Occuped("images/grisSmall.jpg", "occuped");
 
@@ -239,10 +82,6 @@ function refresh(){
 
 
 //*******************************************FONCTIONS UTILISEES POUR LES DEPLACEMENTS****************************************
-//Suppression du css pour retirer l'image
-function remove(position, classe){
-    $("td").eq(position).removeAttr("style").removeClass(classe).addClass("free");
-};
 //Ajout de l'image
 function addImage(position, avatar, classe){
     $("td").eq(position).css({"background-image": 'url("' + avatar + '")', "background-repeat": "no-repeat", "background-position": "center center"}).removeClass("free").addClass(classe);
@@ -257,7 +96,6 @@ function checkPos(player){//Appelle addWeapon sur toutes les armes à chaque dé
 };
 //Mise à jour du tableau des positions, appelé à chaque tour pour récupérer correctement les positions dans le déplacement
 function refreshPos(){
-    let arrayPos = [] ;//On vide le tableau avant de le remplir avec les nouvelles valeurs
     let tableau = Array.from(document.querySelectorAll("td"));
     //Cette fonction renvoie la position de l'élément passé en paramètre.
     function position(elt){//elt est la classe correspondante au perso ou arme concerné
@@ -271,15 +109,12 @@ function refreshPos(){
     w2.position = position(".W2");
     w3.position = position(".W3");
     w4.position = position(".W4");
-    //Remplissage d'arrayPos avec les nouvelles positions
-    arrayPos = [perso1.position, perso2.position, w1.position, w3.position, w4.position];
     //Ce if évite que la fonction checkPos ne soit appelée sans nécessité sur un joueur immobile.
     if(p1Play == true){
         checkPos(perso1);
     } else {
         checkPos(perso2);
     };
-    return arrayPos;//ArrayPos est le tableau des positions, permet de travailler ensuite sur toutes les positions
 };   
 
 //************************ AJOUT DES NOMS DES PERSONNAGES EN HTML*****************************
